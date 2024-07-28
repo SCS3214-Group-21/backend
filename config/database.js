@@ -1,14 +1,25 @@
 import mysql from 'mysql2/promise'
 import fs from 'fs'
 import path from 'path'
+import { config } from 'dotenv'
+
+config()
 
 // create a connection pool
-const mysqlPool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'euphoria'
-})
+const connectToDb = (callback) => {
+    const mysqlPool = mysql.createPool({
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || '',
+        database: process.env.DB_DATABASE || 'euphoria'
+    })
+        .then(() => {
+            if(callback)callback(null)
+        })
+        .catch((err) => {
+            if(callback)callback(err)
+        })
+}
 
 // load and execute procedures
 const initDb = async () => {
@@ -40,4 +51,4 @@ initDb()
         console.error('Error initializing database', err)
     })
 
-export default mysqlPool
+export { connectToDb }
