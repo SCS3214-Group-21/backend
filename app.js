@@ -7,6 +7,7 @@ import { config } from 'dotenv'
 
 // import middleware and utils
 import { logger } from './middlewares/logger.js'
+import errorHandler from './middlewares/errorHandler.js'
 import { connectToDb } from './config/database.js'
 
 config()
@@ -23,7 +24,7 @@ const app = express()
 app.use(logger)
 app.use(express.json())
 app.use(cookieParser())
-
+app.use(errorHandler)
 
 // database connection
 connectToDb((err) => {
