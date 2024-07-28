@@ -5,7 +5,8 @@ import cookieParser from 'cookie-parser'
 import { fileURLToPath } from 'url'
 import { config } from 'dotenv'
 
-//
+// import middleware and utils
+import { logger } from './middlewares/logger.js'
 import { connectToDb } from './config/database.js'
 
 config()
@@ -19,6 +20,7 @@ const __dirname = path.dirname(__filename)
 const app = express()
 
 // use middleware and utils
+app.use(logger)
 app.use(express.json())
 app.use(cookieParser())
 
