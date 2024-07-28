@@ -29,13 +29,16 @@ app.use(errorHandler)
 app.use(cors(corsOptions))
 
 // database connection
-connectToDb((err) => {
-    if (err) {
-        console.error("Failed to connect to DB", err)
+const startServer = async () => {
+    try {
+        await connectToDb()
+        // start the server
+        app.listen(PORT, () => {
+            console.log(`Server running on port: ${PORT}`)
+        })
+    } catch (err) {
+        console.error("Failed to connect to Database ", err)
     }
+}
 
-    // start the server
-    app.listen(PORT, () => {
-        console.log(`Server running on port: ${PORT}`)
-    })
-})
+startServer()
