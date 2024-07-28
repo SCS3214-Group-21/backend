@@ -8,6 +8,7 @@ import { config } from 'dotenv'
 // import middleware and utils
 import { logger } from './middlewares/logger.js'
 import errorHandler from './middlewares/errorHandler.js'
+import corsOptions from './config/corsOptions.js'
 import { connectToDb } from './config/database.js'
 
 config()
@@ -25,6 +26,7 @@ app.use(logger)
 app.use(express.json())
 app.use(cookieParser())
 app.use(errorHandler)
+app.use(cors(corsOptions))
 
 // database connection
 connectToDb((err) => {
