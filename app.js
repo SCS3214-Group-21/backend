@@ -9,7 +9,7 @@ import { config } from 'dotenv'
 import { logger } from './middlewares/logger.js'
 import errorHandler from './middlewares/errorHandler.js'
 import corsOptions from './config/corsOptions.js'
-import { connectToDb } from './config/database.js'
+import { mysqlPool } from './config/database.js'
 
 config()
 
@@ -31,12 +31,14 @@ app.use(cors(corsOptions))
 // database connection
 const startServer = async () => {
     try {
-        await connectToDb()
+        await mysqlPool.getConnection()
+
         // start the server
         app.listen(PORT, () => {
             console.log(`Server running on port: ${PORT}`)
         })
-    } catch (err) {
+    }
+    catch (err) {
         console.error("Failed to connect to Database ", err)
     }
 }

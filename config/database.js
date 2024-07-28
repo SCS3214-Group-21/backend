@@ -1,8 +1,8 @@
 import mysql from 'mysql2/promise'
 import fs from 'fs'
 import path from 'path'
-import { config } from 'dotenv'
-import { fileURLToPath } from 'url'
+import {config} from 'dotenv'
+import {fileURLToPath} from 'url'
 
 config()
 
@@ -10,20 +10,20 @@ config()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+let mysqlPool
+
 // create a connection pool
 const connectToDb = async () => {
-    const mysqlPool = mysql.createPool({
+    return mysql.createPool({
         host: process.env.DB_HOST || 'localhost',
         user: process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || '',
         database: process.env.DB_DATABASE || 'euphoria'
     })
-    return mysqlPool
 }
 
 // load and execute procedures
-const initDb = async () => {
-    const mysqlPool = await connectToDb()
+const initProc = async (mysqlPool) => {
     const proceduresPath = path.join(__dirname, 'procedures')
     const files = fs.readdirSync(proceduresPath)
 
@@ -44,8 +44,14 @@ const initDb = async () => {
     }
 }
 
-// initialize database
-initDb()
+// init database pool
+const initDb = async () => {
+    mysqlPool = await connectToDb()
+    await initProc(mysqlPool)
+    return mysqlPool
+}
+
+await initDb()
     .then(() => {
         console.log('Database initialized')
     })
@@ -53,4 +59,4 @@ initDb()
         console.error('Error initializing database', err)
     })
 
-export { connectToDb }
+export { mysqlPool }
