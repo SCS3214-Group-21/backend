@@ -4,6 +4,7 @@ import path from 'path'
 import cookieParser from 'cookie-parser'
 import { fileURLToPath } from 'url'
 import { config } from 'dotenv'
+import router from './router'
 
 // import middleware and utils
 import { logger } from './middlewares/logger.js'
@@ -27,6 +28,9 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(errorHandler)
 app.use(cors(corsOptions))
+
+// use router
+app.use(router)
 
 // database connection
 const startServer = async () => {
