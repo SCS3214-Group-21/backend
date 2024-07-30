@@ -1,10 +1,10 @@
-import express from 'express'
+import express, {urlencoded} from 'express'
 import cors from 'cors'
 import path from 'path'
 import cookieParser from 'cookie-parser'
 import { fileURLToPath } from 'url'
 import { config } from 'dotenv'
-import router from './router'
+import router from './router.js'
 
 // import middleware and utils
 import { logger } from './middlewares/logger.js'
@@ -28,6 +28,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(errorHandler)
 app.use(cors(corsOptions))
+app.use(urlencoded({ extended: true }))
 
 // use router
 app.use(router)

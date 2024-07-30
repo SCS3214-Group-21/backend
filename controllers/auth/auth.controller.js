@@ -1,24 +1,28 @@
-import bcrypt from 'bcrypt'
-import { mysqlPool } from '../config/database.js'
+import { mysqlPool } from '../../config/database.js'
+import { hashPassword } from '../../utils/password.utils.js'
 
-const saltRounds = 10
-
-// function to hash the password
-const hashPassword = async (password) => {
-    const salt = await bcrypt.genSalt(saltRounds)
-    return await bcrypt.hash(password, salt)
-}
-
-// create new user
-const createUser = async (req, res) => {
+// register user
+const registerUser = async (req, res) => {
     const { email, password } = req.body
 
     try {
         const hashedPassword = await hashPassword(password)
 
+        await mysqlPool.query(
+            'SELECT email FROM auth WHERE email = ?',
+            [email],
+            (error, results) => {
+                if (error) {
+                    return res.status(500).json({ message: error.message })
+                }
+                if (results.length > 0) {
+                    return res.status(204).json({ message: 'Email already exists' })
+                }
+            })
+
         const [result] = await mysqlPool.query(
-            'INSERT INTO users (email, password) VALUES (?, ?)',
-            [email, password]
+            'INSERT INTO auth (email, password) VALUES (?, ?)',
+            [email, hashedPassword]
         )
 
         res.status(201).json({ message: 'User created successfully', userId: result.insertId })
@@ -28,6 +32,9 @@ const createUser = async (req, res) => {
     }
 }
 
+
+
+// update user password
 const updateUserPassword = async (req, res) => {
     const { userId, newPassword } = req.body
 
@@ -49,5 +56,3 @@ const updateUserPassword = async (req, res) => {
         res.status(500).json({ error: 'Failed to update password' })
     }
 }
-
-export { createUser, updateUserPassword }
