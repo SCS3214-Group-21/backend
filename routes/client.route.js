@@ -8,8 +8,6 @@ import {
     deleteProfile,
 } from '../controllers/client/profile.controller.js'
 
-// import middlewares
-import verifyJWT from '../middlewares/verifyJWT.js'
 
 const router = express.Router()
 

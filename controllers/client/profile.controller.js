@@ -1,5 +1,5 @@
-import { mysqlPool } from '../../config/database.js'
 import asyncHandler from 'express-async-handler'
+import { mysqlPool } from '../../config/database.js'
 
 const getProfile = asyncHandler(async (req, res) => {
     const { client_id } = req.body

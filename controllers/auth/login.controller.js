@@ -47,7 +47,7 @@ const loginController = asyncHandler(async (req, res) => {
         }
 
         // create secure cookie with refreshToken
-        res.cookie('jwt', refreshToken, {
+        res.cookie('jwt', accessToken, {
             httpOnly: true,     // accessible only by webserver
             secure: true,       // https
             sameSite: 'None',   // cross-site cookies

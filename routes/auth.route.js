@@ -6,9 +6,6 @@ import registerController from '../controllers/auth/register.controller.js'
 import logoutController from '../controllers/auth/logout.controller.js'
 import refreshController from '../controllers/auth/refresh.controller.js'
 
-// import middlewares
-import verifyJWT from '../middlewares/verifyJWT.js'
-
 const router = express.Router()
 
 router.post('/', loginController)

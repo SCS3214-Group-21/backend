@@ -12,7 +12,7 @@ const logoutController = async (req, res) => {
 
     const token = cookies.jwt
 
-    const query = 'UPDATE session SET active = false WHERE token = ?'
+    const query = 'UPDATE sessions SET active = false WHERE token = ?'
 
     try {
         const connection = await mysqlPool.getConnection()
