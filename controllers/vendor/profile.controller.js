@@ -4,7 +4,7 @@ import { mysqlPool } from '../../config/database.js'
 const getProfile = asyncHandler(async (req, res) => {
     const { client_id } = req.body
     if (!client_id) {
-        return res.status(400).json({ message: "Client ID is required" })
+        return res.status(400).json({ message: "Client ID is required "})
     }
 
     let connection
@@ -13,28 +13,28 @@ const getProfile = asyncHandler(async (req, res) => {
         connection = await mysqlPool.getConnection()
 
         // check whether user exists
-        const [existingClient] = await mysqlPool.query(
+        const [existingVendor] = await mysqlPool.query(
             'SELECT * FROM auth WHERE id = ?',
             [client_id]
         )
-        if (existingClient.length === 0) {
-            return res.status(404).json({message: 'User not found'})
+        if (existingVendor.length === 0) {
+            return res.status(404).json({ message: 'User not found' })
         }
 
         // check whether profile exists
-        const [clientProfile] = await mysqlPool.query(
-            'SELECT * FROM client_profile WHERE client_id = ?',
+        const [vendorProfile] = await mysqlPool.query(
+            'SELECT * FROM vendor_profile WHERE client_id = ?',
             [client_id]
         )
-        if (clientProfile.length === 0) {
-            return res.status(404).json({ message: 'Profile not exists' })
+        if (vendorProfile.length === 0) {
+            return res.status(404).json({ message: "Profile not exists" })
         }
 
-        const profile = clientProfile[0]
-        res.status(200).json({profile})
+        const profile = vendorProfile[0]
+        res.status(200).json({ profile })
     }
     catch (err) {
-        console.error('Error getting client profile: ', err.message)
+        console.error('Error getting vendor profile: ', err.message)
         res.status(500).json({ message: err.message })
     }
     finally {
@@ -42,11 +42,11 @@ const getProfile = asyncHandler(async (req, res) => {
     }
 })
 
-const createProfile = asyncHandler(async (req, res) => {
-    const {client_id, bride_name, groom_name, wed_date } = req.body
+const createProfile = asyncHandler(async(req, res) => {
+    const {client_id, name, business_name, nic, nic_image, logo, vendor_type} = req.body
 
     if (!client_id) {
-        return res.status(400).json({message: 'Client ID is required'})
+        return res.status(400).json({ message: 'Client ID is required' })
     }
 
     let connection
@@ -55,18 +55,18 @@ const createProfile = asyncHandler(async (req, res) => {
         connection = await mysqlPool.getConnection()
 
         // check whether user exists
-        const [existingClient] = await connection.query(
+        const [existingVendor] = await connection.query(
             'SELECT * FROM auth WHERE id=?',
             [client_id]
         )
 
-        if (existingClient.length === 0) {
-            return res.status(404).json({message: 'User not found' })
+        if (existingVendor.length === 0) {
+            return res.status(404).json({ message: 'User not found' })
         }
 
         const [sessionResult] = await connection.query(
-            'INSERT INTO client_profile (client_id, bride_name, groom_name, wed_date) VALUES (?, ?, ?, ?)',
-            [client_id, bride_name, groom_name, wed_date]
+            'INSERT INTO vendor_profile (client_id, name, business_name, nic, nic_image, logo, vendor_type) VALUES (?,?,?,?,?,?,?)',
+            [client_id, name, business_name, nic, nic_image, logo, vendor_type]
         )
 
         if (sessionResult.affectedRows === 0) {
@@ -85,10 +85,10 @@ const createProfile = asyncHandler(async (req, res) => {
 })
 
 const updateProfile = asyncHandler(async (req, res) => {
-    const { client_id, bride_name, groom_name, wed_date } = req.body
+    const {client_id, name, business_name, nic, nic_image, logo, vendor_type} = req.body
 
-    if(!client_id) {
-        return res.status(400).json({message: 'Client ID is required'})
+    if (!client_id) {
+        return res.status(400).json({ message: 'Client ID is required' })
     }
 
     let connection
@@ -97,28 +97,28 @@ const updateProfile = asyncHandler(async (req, res) => {
         connection = await mysqlPool.getConnection()
 
         // check whether user exists
-        const [existingClient] = await connection.query(
+        const [existingVendor] = await connection.query(
             'SELECT * FROM auth WHERE id = ?',
             [client_id]
         )
 
-        if (existingClient.length === 0) {
-            return res.status(404).json({message: 'User not found'})
+        if (existingVendor.length === 0) {
+            return res.status(404).json({ message: 'User not found' })
         }
 
         const [updateProfile] = await connection.query(
-            'UPDATE client_profile SET bride_name = ?, groom_name = ?, wed_date = ? WHERE client_id = ?',
-            [bride_name, groom_name, wed_date, client_id]
+            'UPDATE vendor_profile SET name = ?, business_name = ?, nic = ?, nic_image = ?, logo = ?, vendor_type = ?',
+            [name, business_name, nic, nic_image, logo, vendor_type]
         )
 
         if (updateProfile.affectedRows === 0) {
-            return res.status(500).json({message: 'Failed to update profile'})
+            return res.status(500).json({ message: 'Failed to update profile' })
         }
 
         res.status(200).json({ message: 'Successfully updated profile' })
     }
     catch (err) {
-        console.error('Error updating profile: ', err.message)
+        console.error('Failed to update profile: ', err.message)
         res.status(500).json({ message: err.message })
     }
     finally {
@@ -130,7 +130,7 @@ const deleteProfile = asyncHandler(async (req, res) => {
     const { client_id } = req.body
 
     if (!client_id) {
-        return res.status(400).json({message: 'Client ID is required'})
+        return res.status(400).json({ message:"Client ID is required" })
     }
 
     let connection
@@ -139,27 +139,26 @@ const deleteProfile = asyncHandler(async (req, res) => {
         connection = await mysqlPool.getConnection()
 
         // check whether client exists
-        const [existingClient] = await connection.query(
+        const [existingVendor] = await connection.query(
             'SELECT * FROM auth WHERE id = ?',
             [client_id]
         )
-        if (existingClient.length === 0) {
-            return res.status(404).json({message: 'User not found'})
+        if (existingVendor.length === 0) {
+            return res.status(404).json({ message: 'User not found' })
         }
 
         const [deleteResult] = await connection.query(
-            'DELETE FROM client_profile WHERE client_id = ?',
+            'DELETE FROM vendor_profile WHERE client_id = ?',
             [client_id]
         )
-
         if (deleteResult.affectedRows === 0) {
-            return res.status(500).json({message: 'Failed to delete profile'})
+            return res.status(200).json({ message: 'Failed to delete profile' })
         }
 
         res.status(200).json({ message: 'Successfully deleted profile' })
     }
     catch (err) {
-        console.error("Error deleting profile: ", err.message)
+        console.error("Error deleting profile: ", err)
         res.status(500).json({ message: err.message })
     }
     finally {
@@ -167,4 +166,4 @@ const deleteProfile = asyncHandler(async (req, res) => {
     }
 })
 
-export { createProfile, getProfile, updateProfile, deleteProfile }
+export { getProfile, createProfile, updateProfile, deleteProfile }
