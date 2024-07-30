@@ -11,7 +11,6 @@ import verifyJWT from '../middlewares/verifyJWT.js'
 
 const router = express.Router()
 
-// refresh route
 router.post('/', loginController)
 router.post('/register', registerController)
 router.get('/refresh', refreshController)

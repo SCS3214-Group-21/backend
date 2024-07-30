@@ -13,15 +13,12 @@ const loginController = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
-    const [error, result] = await mysqlPool.query(
-        'SELECT * FROM auth WHERE email = ?',
-        [email]
-    )
-
     let connection
 
     try {
         connection = await mysqlPool.getConnection()
+
+        // check whether emails exists
         const [result] = await mysqlPool.query(
             'SELECT * FROM auth WHERE email = ?',
             [email]
@@ -63,6 +60,9 @@ const loginController = asyncHandler(async (req, res) => {
     catch (error) {
         console.error('Error logging in: ', error.message)
         res.status(500).json({ message: error.message })
+    }
+    finally {
+        if (connection) connection.release()
     }
 })
 

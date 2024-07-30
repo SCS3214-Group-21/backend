@@ -2,6 +2,7 @@ import express from 'express'
 
 // import other routes
 import authRoute from './routes/auth.route.js'
+import clientRoute from './routes/client.route.js'
 
 const router = express.Router()
 
@@ -14,5 +15,6 @@ router.get('/', (req, res) => {
 })
 
 router.use('/auth', authRoute)
+router.use('/client', clientRoute)
 
 export default router
