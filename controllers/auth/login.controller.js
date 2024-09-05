@@ -31,7 +31,7 @@ const loginController = asyncHandler(async (req, res) => {
         const user = result[0]
         const match = await comparePassword(password, user.password)
         if (!match) {
-            return res.status(404).json({ message: 'Unauthorized' })
+            return res.status(401).json({ message: 'Unauthorized' })
         }
 
         const accessToken = genAccessToken(user)

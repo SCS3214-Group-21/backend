@@ -1,0 +1,8 @@
+This branch consist with main code that lasted until
+
+5th September, 2024
+19:33 p.m.
+
+Depricated due to logical errors and serialization upgrade.
+
+-nemesis
