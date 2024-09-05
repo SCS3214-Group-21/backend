@@ -1,10 +1,16 @@
-const verifyRole = (role) => {
+const verifyRoles = (...allowedRoles) => {
     return (req, res, next) => {
-        if (!req.roles || !req.roles.includes(role)) {
-            return res.status(403).json({ message: 'Forbidden: Access Denied' })
-        }
+        if (!req?.roles)
+            return res.sendStatus(401)
+
+        const rolesArray = [...allowedRoles]
+
+        const result = req.roles.map(role => rolesArray.includes(role)).find(val => val === true)
+        if (!result)
+            return res.sendStatus(401)
+
         next()
     }
 }
 
-export default verifyRole
+export default verifyRoles

@@ -7,7 +7,7 @@ import { config } from 'dotenv'
 import router from './router.js'
 
 // import middleware and utils
-import { logger } from './middlewares/logger.js'
+import { logEvents } from './middlewares/logEvents.js'
 import errorHandler from './middlewares/errorHandler.js'
 import corsOptions from './config/corsOptions.js'
 import { mysqlPool } from './config/database.js'
@@ -23,7 +23,7 @@ const __dirname = path.dirname(__filename)
 const app = express()
 
 // use middleware and utils
-app.use(logger)
+app.use(logEvents)
 app.use(express.json())
 app.use(cookieParser())
 app.use(errorHandler)
