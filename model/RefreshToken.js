@@ -10,7 +10,7 @@ const RefreshToken = sequelize.define('RefreshToken', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'User',
+            model: 'Users',
             key: 'id'
         },
         onDelete: 'CASCADE',
