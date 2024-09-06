@@ -1,6 +1,6 @@
 import express from 'express'
 
-import * as routes from '../../controllers/auth/userController.js'
+import * as userController from '../../controllers/auth/userController.js'
 import ROLES_LIST from '../../config/roles_list.js'
 import verifyRoles from '../../middleware/verifyRole.js'
 
