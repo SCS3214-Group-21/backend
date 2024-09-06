@@ -1,15 +1,12 @@
-import {logEvents } from './logger.js'
+import {logEvents } from './logEvents.js'
 
 const errorHandler = (err, req, res, next) => {
-    logEvents(`${err.name}: ${err.message}\t${req.method}\t${req.url}\t${req.url}\t${req.headers.origin}`, 'errLog.log')
+    logEvents(`${err.name}: ${err.message}`, 'errLog.txt')
         .then(() => {
-            console.log(err.stack)
-
+            console.error(err.stack)
             const status = res.statusCode ? res.statusCode : 500    // server error
-
             res.status(status)
             res.json({ message: err.message })
-
             next()
         })
         .catch(err => {
