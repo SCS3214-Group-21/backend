@@ -1,8 +1,8 @@
 import express from 'express'
 
 // import middleware
-import verifyJWT from './middlewares/verifyJWT.js'
-import verifyRole from './middlewares/verifyRole.js'
+import verifyJWT from './middleware/verifyJWT.js'
+import verifyRole from './middleware/verifyRole.js'
 
 // import other routes
 import authRoute from './routes/auth.route.js'
