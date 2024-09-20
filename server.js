@@ -7,6 +7,7 @@ import sequelize from './config/dbConn.js'; // Ensure the path and extension are
 
 import authRoute from './routes/authRoute.js';
 import webRouter from './routes/webRoute.js';
+import blogRouter from './routes/blogRoute.js';
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(cors());
 
 app.use('/api', authRoute);
 app.use('/', webRouter);
+app.use('/blog',blogRouter);
 
 //error handling
 app.use((err, req, res, next) => {

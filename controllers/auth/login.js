@@ -26,7 +26,7 @@ const login = async (req, res) => {
             return res.status(401).send({ msg: 'Password incorrect!' });
         }
 
-        const token = jwt.sign({ id: user.id, is_admin: user.is_admin }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, is_admin: user.is_admin }, JWT_SECRET, { expiresIn: '3h' });
 
         // Update the last login time
         await User.update({ last_log: new Date() }, { where: { id: user.id } });
