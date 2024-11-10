@@ -4,6 +4,8 @@ import multer from 'multer';
 import { fileURLToPath } from 'url';
 import { isAuthorize, isVendor } from '../middlewares/auth.js';
 import createPackage from '../controllers/package/createPackage.js';
+import getPackageById from '../controllers/package/getPackageById.js';
+import getUserPackages from '../controllers/package/getUserPackages.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,5 +36,7 @@ const upload = multer({
 const package_router = express.Router();
 
 package_router.post('/create', isAuthorize, isVendor, upload.single('img'), createPackage);
+package_router.get('/package/:packageId', isAuthorize, isVendor, getPackageById);
+package_router.get('/my-package', isAuthorize, isVendor, getUserPackages);
 
 export default package_router;
