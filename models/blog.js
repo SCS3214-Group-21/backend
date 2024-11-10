@@ -17,7 +17,7 @@ Blog.init({
             key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'CASCADE', // You can change this based on your logic (e.g., restrict or set null)
+        onDelete: 'CASCADE', 
     },
     title: {
         type: DataTypes.STRING(255),
