@@ -7,9 +7,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import sequelize from './config/dbConn.js'; // Ensure the path and extension are correct
 
-import authRoute from './routes/authRoute.js';
+import authRouter from './routes/authRoute.js';
 import webRouter from './routes/webRoute.js';
 import blogRouter from './routes/blogRoute.js';
+import packageRouter from './routes/packageRoute.js';
 
 const app = express();
 
@@ -62,9 +63,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // app.use(cors());
 
-app.use('/api', authRoute);
+app.use('/api', authRouter);
 app.use('/', webRouter);
-app.use('/blog',blogRouter);
+app.use('/blog', blogRouter);
+app.use('/package', packageRouter);
 
 
 //error handling
