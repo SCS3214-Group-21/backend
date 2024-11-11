@@ -8,6 +8,7 @@ import getPackageById from '../controllers/package/getPackageById.js';
 import getUserPackages from '../controllers/package/getUserPackages.js';
 import updatePackage from '../controllers/package/updatePackage.js';
 import updatePackageStatus from '../controllers/package/updatePackageStatus.js';
+import deletePackage from '../controllers/package/deletePackage.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,6 +42,7 @@ package_router.post('/create', isAuthorize, isVendor, upload.single('img'), crea
 package_router.get('/package/:packageId', isAuthorize, isVendor, getPackageById);
 package_router.get('/my-package', isAuthorize, isVendor, getUserPackages);
 package_router.put('/package/:packageId', isAuthorize, isVendor, upload.single('img'), updatePackage);
-package_router.put('/package-status/:packageId', isAuthorize, isVendor, updatePackageStatus)
+package_router.put('/package-status/:packageId', isAuthorize, isVendor, updatePackageStatus);
+package_router.delete('/package/:packageId', isAuthorize, isVendor, deletePackage);
 
 export default package_router;
