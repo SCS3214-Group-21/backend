@@ -3,7 +3,7 @@ import dotenv from 'dotenv'; // Import dotenv to load environment variables
 
 dotenv.config(); // Load environment variables from .env file
 
-const { DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME } = process.env; // Destructure environment variables
+const { DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_PORT } = process.env; // Destructure environment variables
 
 const sequelize = new Sequelize(
     DB_NAME,
@@ -11,6 +11,7 @@ const sequelize = new Sequelize(
     DB_PASSWORD,
     {
         host: DB_HOST,
+        port: DB_PORT || 3306, // Add port here, default to 3306 if DB_PORT is not set
         dialect: 'mysql',
         // Additional configuration options (if needed):
         // logging: false, // Disable logging
