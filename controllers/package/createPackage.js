@@ -27,7 +27,7 @@ const createPackage = async (req, res) => {
         const newPackage = await Package.create({
             vendor_id: req.user.id, // Assuming the authenticated user's ID is attached to the request
             name,
-            img: `images/${req.file.filename}`, // Correctly handle file upload path
+            img: `packages/${req.file.filename}`, // Correctly handle file upload path
             amount,
             items: parsedItems,
             description,
