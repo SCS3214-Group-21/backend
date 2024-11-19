@@ -11,6 +11,7 @@ import authRouter from './routes/authRoute.js';
 import webRouter from './routes/webRoute.js';
 import blogRouter from './routes/blogRoute.js';
 import packageRouter from './routes/packageRoute.js';
+import vendorRouter from './routes/vendorprofileRoutes.js'
 
 const app = express();
 
@@ -67,6 +68,7 @@ app.use('/api', authRouter);
 app.use('/', webRouter);
 app.use('/blog', blogRouter);
 app.use('/package', packageRouter);
+app.use('/vendor', vendorRouter);
 
 
 //error handling
