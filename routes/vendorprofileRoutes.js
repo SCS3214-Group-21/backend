@@ -4,6 +4,8 @@ import multer from 'multer';
 import { fileURLToPath } from 'url';
 import updateProfile from '../controllers/vendorProfile/updateProfile.js';
 import { isAuthorize, isVendor } from '../middlewares/auth.js';
+import getAllProfile from '../controllers/vendorProfile/getAllProfile.js';
+import getProfileById from '../controllers/vendorProfile/getProfileById.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -47,13 +49,10 @@ const upload = multer({
 const vendorRouter = express.Router();
 
 // vendorRouter.post('/update/:vendor_id', isAuthorize, isVendor, upload.single('pic'), upload.array('images', 10), updateProfile);
-vendorRouter.post(
-    '/update/:vendorId',
-    isAuthorize,
-    isVendor,
-    upload,
-    updateProfile
-);
+vendorRouter.post('/update/:vendorId', isAuthorize, isVendor, upload, updateProfile);
+vendorRouter.get('/get-all', isAuthorize, getAllProfile )
+vendorRouter.get('/get-one/:vendorId', isAuthorize, getProfileById)
+
 
 
 export default vendorRouter;
