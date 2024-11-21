@@ -84,6 +84,9 @@ import blogRouter from './routes/blogRoute.js';
 import chatRoute from './routes/chatRoute.js';
 import conversationRoutes from './routes/conversationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
+import paymentRoute from './routes/paymentRoute.js';
+import clientRouter from './routes/clientRoute.js';
+
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server for Express and Socket.IO
@@ -110,6 +113,8 @@ app.use('/blog', blogRouter);
 app.use('/chat', chatRoute); // Add the chat route
 app.use('/conversation', conversationRoutes);
 app.use('/messages', messageRoutes);
+app.use('/payment', paymentRoute);
+app.use('/client/profile', clientRouter)
 
 // Socket.IO events
 io.on('connection', (socket) => {
