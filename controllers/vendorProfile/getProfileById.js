@@ -2,10 +2,10 @@ import Vendor from "../../models/vendor.js";
 
 const getProfileById = async (req, res) => {
     try {
-        const { vendorId } = req.params;
+        const vendorId = req.user.id;
         // console.log(`aa - ${vendorId}`);
 
-        const vendorDetails = await Vendor.findOne({ where: { vendor_id: vendorId } });
+        const vendorDetails = await Vendor.findOne({ where: { id: vendorId } });
 
         if (!vendorDetails) {
             return res.status(404).json({ message: 'Vendors not found' });

@@ -39,7 +39,7 @@ const updateProfile = async (req, res) => {
         }
 
         // Find existing vendor
-        const vendor = await Vendor.findOne({ where: { id: req.params.vendorId } });
+        const vendor = await Vendor.findOne({ where: { id: req.user.id } });
 
         if (vendor) {
             // Update existing vendor
@@ -60,7 +60,7 @@ const updateProfile = async (req, res) => {
         } else {
             // Create new vendor
             await Vendor.create({
-                id: req.params.vendorId,
+                id: req.user.id,
                 first_name,
                 last_name,
                 business_name,

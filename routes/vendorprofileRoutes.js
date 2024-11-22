@@ -49,9 +49,9 @@ const upload = multer({
 const vendorRouter = express.Router();
 
 // vendorRouter.post('/update/:vendor_id', isAuthorize, isVendor, upload.single('pic'), upload.array('images', 10), updateProfile);
-vendorRouter.post('/update/:vendorId', isAuthorize, isVendor, upload, updateProfile);
+vendorRouter.post('/update', isAuthorize, isVendor, upload, updateProfile);
 vendorRouter.get('/get-all', isAuthorize, getAllProfile )
-vendorRouter.get('/get-one/:vendorId', isAuthorize, getProfileById)
+vendorRouter.get('/get-one', isAuthorize, getProfileById)
 
 
 
