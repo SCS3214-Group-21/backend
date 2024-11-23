@@ -6,3 +6,5 @@ node_modules
 
 # remove log files
 logs
+
+uploads
