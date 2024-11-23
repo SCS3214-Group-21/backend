@@ -94,7 +94,7 @@ const server = http.createServer(app); // Create an HTTP server for Express and 
 // Initialize Socket.IO on the HTTP server
 const io = new Server(server, { // Renamed SocketIOServer to Server
     cors: {
-        origin: 'http://localhost:3000', // Set to your frontend URL
+        origin: 'http://localhost:5173', // Set to your frontend URL
         methods: ['GET', 'POST'],
     },
 });
