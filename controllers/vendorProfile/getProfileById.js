@@ -8,7 +8,9 @@ const getProfileById = async (req, res) => {
         const vendorDetails = await Vendor.findOne({ where: { id: vendorId } });
 
         if (!vendorDetails) {
-            return res.status(404).json({ message: 'Vendors not found' });
+            // return res.status(404).json({ message: 'Vendors not found' });
+            await Vendor.create({id: vendorId })
+            return res.status(200).json({ message: 'Vendor Created' });
         }
 
         res.status(200).json({

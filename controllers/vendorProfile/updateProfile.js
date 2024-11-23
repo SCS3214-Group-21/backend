@@ -26,9 +26,9 @@ const updateProfile = async (req, res) => {
         } = req.body;
 
         // Ensure required fields are present
-        if (!first_name || !last_name || !business_name) {
-            return res.status(400).json({ message: "First name, last name, and business name are required." });
-        }
+        // if (!first_name || !last_name || !business_name) {
+        //     return res.status(400).json({ message: "First name, last name, and business name are required." });
+        // }
 
         // Convert JSON fields like `branch` and validate
         let parsedBranch = [];

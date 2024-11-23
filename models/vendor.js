@@ -25,15 +25,15 @@ Vendor.init({
     },
     first_name: {
         type: DataTypes.STRING(255),
-        allowNull: false,
+        allowNull: true,
     },
     last_name: {
         type: DataTypes.STRING(255),
-        allowNull: false,
+        allowNull: true,
     },
     business_name: {
         type: DataTypes.STRING(255),
-        allowNull: false,
+        allowNull: true,
     },
     contact_number: {
         type: DataTypes.STRING(20),
@@ -53,15 +53,15 @@ Vendor.init({
     },
     branch: {
         type: DataTypes.JSON, // Use JSON type to match `json_valid` check in SQL
-        allowNull: false,
+        allowNull: true,
     },
     description: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
     },
     images: {
         type: DataTypes.JSON, // Use JSON type to match `json_valid` check in SQL
-        allowNull: false,
+        allowNull: true,
     }
 }, {
     sequelize,
