@@ -47,7 +47,7 @@ const updatePackage = async (req, res) => {
                 fs.unlinkSync(oldImagePath);
             }
             // Update image path
-            updatedData.img = `images/${req.file.filename}`;
+            updatedData.img = `packages/${req.file.filename}`;
         }
 
         // Update the package
