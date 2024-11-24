@@ -1,6 +1,7 @@
 import { Model, DataTypes } from 'sequelize'; // Import Model and DataTypes from sequelize
 import sequelize from '../config/dbConn.js'; // Ensure the path to your DB connection file is correct and has a .js extension
 import Vendor from './vendor.js';
+import Package from './package.js';
 
 class User extends Model {}
 
@@ -63,5 +64,9 @@ User.init({
 // Associations
 User.hasOne(Vendor, { foreignKey: 'id' });
 Vendor.belongsTo(User, { foreignKey: 'id' });
+
+// Associations
+User.hasMany(Package, { foreignKey: "vendor_id" });
+Package.belongsTo(User, { foreignKey: "vendor_id" });
 
 export default User; // Export User class
