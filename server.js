@@ -21,7 +21,8 @@ import paymentRoute from './routes/paymentRoute.js';
 import clientRouter from './routes/clientRoute.js';
 
 import packageRouter from './routes/packageRoute.js';
-import vendorRouter from './routes/vendorprofileRoutes.js'
+import vendorRouter from './routes/vendorprofileRoutes.js';
+import budgetRouter from './routes/budgetRoute.js';
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server for Express and Socket.IO
@@ -95,8 +96,8 @@ app.use('/chat', chatRoute); // Add the chat route
 app.use('/conversation', conversationRoutes);
 app.use('/messages', messageRoutes);
 app.use('/payment', paymentRoute);
-app.use('/client/profile', clientRouter)
-
+app.use('/client/profile', clientRouter);
+app.use('/budget', budgetRouter);
 
 // Socket.IO events
 // io.on('connection', (socket) => {

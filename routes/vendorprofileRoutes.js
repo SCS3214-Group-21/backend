@@ -6,6 +6,7 @@ import updateProfile from '../controllers/vendorProfile/updateProfile.js';
 import { isAuthorize, isVendor } from '../middlewares/auth.js';
 import getAllProfile from '../controllers/vendorProfile/getAllProfile.js';
 import getProfileById from '../controllers/vendorProfile/getProfileById.js';
+import getProfileByVendors from '../controllers/vendorProfile/getProfileByVendors.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,6 +53,7 @@ const vendorRouter = express.Router();
 vendorRouter.post('/update', isAuthorize, isVendor, upload, updateProfile);
 vendorRouter.get('/get-all', isAuthorize, getAllProfile )
 vendorRouter.get('/get-one', isAuthorize, getProfileById)
+vendorRouter.get('/get-vendors/:vendor', isAuthorize, getProfileByVendors)
 
 
 
