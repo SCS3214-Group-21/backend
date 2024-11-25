@@ -62,11 +62,10 @@ User.init({
 });
 
 // Associations
-User.hasOne(Vendor, { foreignKey: 'id' });
+User.hasOne(Vendor, { foreignKey: 'id' }); // Link User to Vendor
 Vendor.belongsTo(User, { foreignKey: 'id' });
 
-// Associations
-User.hasMany(Package, { foreignKey: "vendor_id" });
-Package.belongsTo(User, { foreignKey: "vendor_id" });
+User.hasMany(Package, { foreignKey: 'vendor_id' }); // Link User to Packages
+Package.belongsTo(User, { foreignKey: 'vendor_id' });
 
 export default User; // Export User class
