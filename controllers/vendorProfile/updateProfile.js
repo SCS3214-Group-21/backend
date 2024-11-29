@@ -2,6 +2,7 @@ import Vendor from '../../models/vendor.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import Payment from '../../models/payment.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,7 +23,8 @@ const updateProfile = async (req, res) => {
             address,
             city,
             branch,
-            description
+            description,
+            payment_key,
         } = req.body;
 
         // Ensure required fields are present
@@ -40,8 +42,9 @@ const updateProfile = async (req, res) => {
 
         // Find existing vendor
         const vendor = await Vendor.findOne({ where: { id: req.user.id } });
+        const payment = await Payment.findOne({ where: { user_id: req.user_id } });
 
-        if (vendor) {
+        if (vendor && payment) {
             // Update existing vendor
             await vendor.update({
                 first_name,
@@ -56,6 +59,9 @@ const updateProfile = async (req, res) => {
                 pic: profilePic || vendor.pic, // Keep old pic if no new pic uploaded
                 images: uploadedImages.length > 0 ? uploadedImages : vendor.images, // Keep old images if none uploaded
             });
+            await Payment.update({
+                payment_key
+            })
             return res.status(200).json({ message: "Vendor profile updated successfully." });
         } else {
             // Create new vendor
@@ -73,6 +79,10 @@ const updateProfile = async (req, res) => {
                 pic: profilePic,
                 images: uploadedImages,
             });
+            await Payment.create({
+                user_id: req.user_id,
+                payment_key,
+            })
             return res.status(201).json({ message: "Vendor profile created successfully." });
         }
     } catch (error) {
