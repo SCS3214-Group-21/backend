@@ -62,7 +62,11 @@ Vendor.init({
     images: {
         type: DataTypes.JSON, // Use JSON type to match `json_valid` check in SQL
         allowNull: true,
-    }
+    },
+    role: {
+        type: DataTypes.STRING(32),
+        allowNull: true
+    },
 }, {
     sequelize,
     modelName: 'Vendor',

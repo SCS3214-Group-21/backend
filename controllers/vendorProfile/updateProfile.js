@@ -3,17 +3,20 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import Payment from '../../models/payment.js';
+import sequelize from '../../config/dbConn.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const updateProfile = async (req, res) => {
     try {
-        // Access uploaded files
-        const profilePic = req.files?.pic?.[0]?.filename || null; // Single file for 'pic'
-        const uploadedImages = req.files?.images?.map(file => file.filename) || []; // Array of filenames for 'images'
+        const userId = req.user.id; // Unified user ID access.
 
-        // Access other fields in req.body
+        const profilePic = req.files?.pic?.[0]?.filename || null;
+        const uploadedImages = Array.isArray(req.files?.images)
+            ? req.files.images.map(file => file.filename)
+            : [];
+
         const {
             first_name,
             last_name,
@@ -27,12 +30,10 @@ const updateProfile = async (req, res) => {
             payment_key,
         } = req.body;
 
-        // Ensure required fields are present
         // if (!first_name || !last_name || !business_name) {
         //     return res.status(400).json({ message: "First name, last name, and business name are required." });
         // }
 
-        // Convert JSON fields like `branch` and validate
         let parsedBranch = [];
         try {
             parsedBranch = JSON.parse(branch || '[]');
@@ -40,55 +41,65 @@ const updateProfile = async (req, res) => {
             return res.status(400).json({ message: "Invalid JSON format for branch." });
         }
 
-        // Find existing vendor
-        const vendor = await Vendor.findOne({ where: { id: req.user.id } });
-        const payment = await Payment.findOne({ where: { user_id: req.user_id } });
+        const transaction = await sequelize.transaction(); // Ensure atomic updates
+        try {
+            const vendor = await Vendor.findOne({ where: { id: userId } });
+            const payment = await Payment.findOne({ where: { user_id: userId } });
 
-        if (vendor && payment) {
-            // Update existing vendor
-            await vendor.update({
-                first_name,
-                last_name,
-                business_name,
-                contact_number,
-                email,
-                address,
-                city,
-                branch: parsedBranch,
-                description,
-                pic: profilePic || vendor.pic, // Keep old pic if no new pic uploaded
-                images: uploadedImages.length > 0 ? uploadedImages : vendor.images, // Keep old images if none uploaded
-            });
-            await Payment.update({
-                payment_key
-            })
+            if (vendor) {
+                await vendor.update(
+                    {
+                        first_name,
+                        last_name,
+                        business_name,
+                        contact_number,
+                        email,
+                        address,
+                        city,
+                        branch: parsedBranch,
+                        description,
+                        pic: profilePic || vendor.pic,
+                        images: uploadedImages.length > 0 ? uploadedImages : vendor.images,
+                    },
+                    { transaction }
+                );
+                await Payment.update(
+                    { payment_key },
+                    { where: { user_id: userId }, transaction }
+                );
+            } else {
+                await Vendor.create(
+                    {
+                        id: userId,
+                        first_name,
+                        last_name,
+                        business_name,
+                        contact_number,
+                        email,
+                        address,
+                        city,
+                        branch: parsedBranch,
+                        description,
+                        pic: profilePic,
+                        images: uploadedImages,
+                    },
+                    { transaction }
+                );
+                await Payment.create(
+                    { user_id: userId, payment_key },
+                    { transaction }
+                );
+            }
+
+            await transaction.commit();
             return res.status(200).json({ message: "Vendor profile updated successfully." });
-        } else {
-            // Create new vendor
-            await Vendor.create({
-                id: req.user.id,
-                first_name,
-                last_name,
-                business_name,
-                contact_number,
-                email,
-                address,
-                city,
-                branch: parsedBranch,
-                description,
-                pic: profilePic,
-                images: uploadedImages,
-            });
-            await Payment.create({
-                user_id: req.user_id,
-                payment_key,
-            })
-            return res.status(201).json({ message: "Vendor profile created successfully." });
+        } catch (error) {
+            await transaction.rollback();
+            throw error;
         }
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
-
 
 export default updateProfile;

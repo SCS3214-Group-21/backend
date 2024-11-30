@@ -44,6 +44,10 @@ Package.init({
         allowNull: false,
         defaultValue: true, // Add defaultValue to match SQL schema
     },
+    role: {
+        type: DataTypes.STRING(32),
+        allowNull: true
+    },
 }, {
     sequelize, // Pass the sequelize instance
     modelName: 'Package',

@@ -11,7 +11,7 @@ const getProfileById = async (req, res) => {
 
         if (!vendorDetails && !paymentDetails) {
             // return res.status(404).json({ message: 'Vendors not found' });
-            await Vendor.create({ id: vendorId })
+            await Vendor.create({ id: vendorId, role: req.user.role })
             await Payment.create({ user_id: vendorId })
             return res.status(200).json({ message: 'Vendor Created' });
         }
