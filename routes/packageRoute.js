@@ -40,7 +40,7 @@ const upload = multer({
 const package_router = express.Router();
 
 package_router.post('/create', isAuthorize, isVendor, upload.single('img'), createPackage);
-package_router.get('/package/:packageId', isAuthorize, isVendor, getPackageById);
+package_router.get('/package/:packageId', isAuthorize, getPackageById);
 package_router.get('/my-packages', isAuthorize, isVendor, getUserPackages);
 package_router.put('/package/:packageId', isAuthorize, isVendor, upload.single('img'), updatePackage);
 package_router.put('/package-status/:packageId', isAuthorize, isVendor, updatePackageStatus);
