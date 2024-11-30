@@ -5,7 +5,11 @@ import getBudget from "../controllers/Budget/getBudget.js";
 import getInitialBudget from "../controllers/Budget/getInitialBudget.js";
 import updateBudget from "../controllers/Budget/updateBudget.js";
 import getAllMinBudget from "../controllers/Budget/getAllMinBudget.js";
+import getAllBudget from "../controllers/Budget/getAllBudget.js";
 import { isAuthorize } from "../middlewares/auth.js";
+import updateBudgetStatus from "../controllers/Budget/updateBudgetStatus.js";
+import getBudgetById from "../controllers/Budget/getBudgetById.js";
+import deleteBudget from "../controllers/Budget/deleteBudget.js";
 
 const vendorRouter = express.Router();
 
@@ -15,5 +19,9 @@ vendorRouter.get("/get-budget/:id", isAuthorize, getBudget);
 vendorRouter.get("/get-initial/:id", isAuthorize, getInitialBudget);
 vendorRouter.put("/update-budget/:plan_id", isAuthorize, updateBudget);
 vendorRouter.post("/find-packages", isAuthorize, getAllMinBudget);
+vendorRouter.get("/get-all", isAuthorize, getAllBudget);
+vendorRouter.put("/budget-status/:id", isAuthorize, updateBudgetStatus);
+vendorRouter.get('/get-one/:id', isAuthorize, getBudgetById);
+vendorRouter.delete('/delete/:id', isAuthorize, deleteBudget);
 
 export default vendorRouter;

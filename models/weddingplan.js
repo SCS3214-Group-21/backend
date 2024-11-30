@@ -75,6 +75,10 @@ WeddingPlan.init({
         type: DataTypes.INTEGER,
         allowNull: true,
     },
+    status: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
 }, {
     sequelize,
     modelName: 'WeddingPlan',
