@@ -1,4 +1,4 @@
-import Booking from "../../models/booking";
+import Booking from "../../models/booking.js";
 
 // Function to get all bookings
 const getBookings = async (req, res) => {

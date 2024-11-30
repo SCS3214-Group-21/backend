@@ -71,7 +71,7 @@ Booking.init({
 }, {
     sequelize, // Pass the sequelize instance
     modelName: 'Booking', // Define the model name
-    tableName: 'bookings', // Explicitly define the table name if it differs
+    tableName: 'booking', // Explicitly define the table name if it differs
     timestamps: false, // Disable automatic timestamps (createdAt, updatedAt)
 });
 

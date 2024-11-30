@@ -1,4 +1,4 @@
-import Booking from "../../models/booking";
+import Booking from "../../models/booking.js";
 
 // Function to update a booking
 const updateBooking = async (req, res) => {

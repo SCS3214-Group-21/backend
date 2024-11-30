@@ -1,4 +1,4 @@
-import Booking from "../../models/booking";
+import Booking from "../../models/booking.js";
 
 // Function to delete a booking
 const deleteBooking = async (req, res) => {

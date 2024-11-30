@@ -19,10 +19,13 @@ import conversationRoutes from './routes/conversationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import paymentRoute from './routes/paymentRoute.js';
 import clientRouter from './routes/clientRoute.js';
+import quotationRouter from './routes/quotationRoute.js';
 
 import packageRouter from './routes/packageRoute.js';
 import vendorRouter from './routes/vendorprofileRoutes.js';
 import budgetRouter from './routes/budgetRoute.js';
+import bookingRouter from './routes/bookingRoute.js';
+
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server for Express and Socket.IO
@@ -98,6 +101,8 @@ app.use('/messages', messageRoutes);
 app.use('/payment', paymentRoute);
 app.use('/client/profile', clientRouter);
 app.use('/budget', budgetRouter);
+app.use('/quotation', quotationRouter);
+app.use('/booking', bookingRouter);
 
 // Socket.IO events
 // io.on('connection', (socket) => {

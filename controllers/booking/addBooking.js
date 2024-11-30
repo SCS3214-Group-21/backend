@@ -1,4 +1,4 @@
-import Booking from "../../models/booking";
+import Booking from "../../models/booking.js";
 
 // Function to create a new booking
 const createBooking = async (req, res) => {
@@ -6,9 +6,19 @@ const createBooking = async (req, res) => {
         const { vendor_id, client_id, vendor_type, price, package_id, package_name, booking_date, booking_time, guest_count, status } = req.body;
 
         // Ensure required fields are provided
-        if (!vendor_id || !client_id || !vendor_type || !price || !package_id || !package_name || !booking_date || !booking_time || !guest_count || !status) {
-            return res.status(400).json({ message: 'All fields are required' });
-        }
+        // if (!vendor_id || !client_id || !vendor_type || !price || !package_id || !package_name || !booking_date || !booking_time || !guest_count || !status) {
+        //     return res.status(400).json({ message: 'All fields are required' });
+        // }
+        console.log(vendor_id);
+        console.log(client_id);
+        console.log(vendor_type);
+        console.log(price);
+        console.log(package_id);
+        console.log(package_name);
+        console.log(booking_date);
+        console.log(booking_time);
+        console.log(guest_count);
+        console.log(status);
 
         // Create the new booking
         const newBooking = await Booking.create({
