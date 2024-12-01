@@ -9,9 +9,12 @@ export const getUserPackages = async (req, res) => {
         // Fetch all packages associated with the logged-in user
         const userPackages = await Package.findAll({ where: { vendor_id: userId } });
 
-        // Check if there are any packages for the user
-        if (!userPackages.length) {
-            return res.status(404).json({ message: 'No packages found for this user' });
+        // If no packages are found, return a 404 status and a specific message
+        if (userPackages.length === 0) {
+            return res.status(200).json({
+                message: 'No packages found for this user',
+                packages: []  // Return an empty array
+            });
         }
 
         // Respond with the list of packages
