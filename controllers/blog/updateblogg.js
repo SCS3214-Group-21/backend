@@ -1,97 +1,82 @@
-import Blog from "../../models/blog.js";
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
+import WeddingPlan from "../../models/weddingplan.js";
+import Package from "../../models/package.js";
+import User from "../../models/user.js";
+import sequelize from "../../config/dbConn.js";
+import { Op } from "sequelize";
 
-// Determine the current directory name
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Function to update a specific blog by its ID
-const updateBlog = async (req, res) => {
+const getInitialBudget = async (req, res) => {
     try {
-        const { blogId } = req.params;
-        const { title, description } = req.body;
-        const userId = req.user.id; // ID of the logged-in user
+        const { id } = req.params;
 
-        // Fetch the blog from the database
-        const blog = await Blog.findOne({ where: { blog_id: blogId } });
+        // Fetch the budget details for the given plan ID
+        const budgetDetails = await WeddingPlan.findOne({ where: { plan_id: id } });
 
-        // Check if the blog exists
-        if (!blog) {
-            return res.status(404).json({ message: 'Blog not found' });
+        if (!budgetDetails) {
+            return res.status(404).json({ message: "Budget Not Found" });
         }
 
-        // Check if the logged-in user is the owner of the blog
-        if (blog.id !== userId) {
-            return res.status(403).json({ message: 'You are not authorized to update this blog' });
-        }
+        // Extract the budget amounts for different services
+        const servicesBudget = {
+            hotels: budgetDetails.hotels,
+            dressers: budgetDetails.dressers,
+            photography: budgetDetails.photography,
+            floral: budgetDetails.floral,
+            jewellary: budgetDetails.jewellary,
+            dancing_groups: budgetDetails.dancing_groups,
+            ashtaka: budgetDetails.ashtaka,
+            salons: budgetDetails.salons,
+            dJs: budgetDetails.dJs,
+            honeymoon: budgetDetails.honeymoon,
+            cars: budgetDetails.cars,
+            invitation_cards: budgetDetails.invitation_cards,
+            poruwa: budgetDetails.poruwa,
+            catering: budgetDetails.catering,
+        };
 
-        // Prepare updated data
-        const updatedData = { title, description };
+        const suggestions = {};
 
-        // Handle file update if a new image is provided
-        if (req.file) {
-            // Delete the old image file if it exists
-            const oldImagePath = path.join(__dirname, `../../uploads/images/${blog.img}`);
-            if (fs.existsSync(oldImagePath)) {
-                fs.unlinkSync(oldImagePath);
+        // Iterate through each service
+        for (const [service, budget] of Object.entries(servicesBudget)) {
+            if (budget !== null && budget > 0) {
+                console.log(`Processing service: ${service}, Budget: ${budget}`);
+
+                // Fetch a package matching the service category and budget
+                const packageSuggestion = await Package.findAll({
+                    include: [
+                        {
+                            model: User,
+                            attributes: [], // We don't need User details in the final result
+                            where: { role: service }, // Match service with the User's role
+                        },
+                    ],
+                    where: {
+                        amount: { [Op.lte]: budget }, // Budget constraint
+                        is_enable: true, // Only enabled packages
+                    },
+                    order: sequelize.literal("RAND()"), // Randomize the selection
+                    limit: 1, // Get one package
+                });
+
+                // Add the suggestion to the response
+                suggestions[service] =
+                    packageSuggestion.length > 0 ? packageSuggestion[0] : null;
+            } else {
+                suggestions[service] = null; // No budget allocated
             }
-            // Update image path
-            updatedData.img = `images/${req.file.filename}`;
         }
 
-        // Update the blog
-        const updatedBlog = await Blog.update(updatedData, {
-            where: { blog_id: blogId },
-            returning: true, // This will return the updated blog
-        });
-
-        // Check if the update was successful
-        if (updatedBlog[0] === 0) {
-            return res.status(400).json({ message: 'Blog update failed' });
-        }
-
+        // Respond with the budget details and package suggestions
         res.status(200).json({
-            message: 'Blog updated successfully',
-            blog: updatedBlog[1][0], // Get the updated blog from the response
+            message: "Budget and package suggestions retrieved successfully",
+            budgetDetails,
+            suggestions,
         });
     } catch (error) {
         res.status(500).json({
-            message: 'Error updating blog',
+            message: "Error retrieving budget and suggestions",
             error: error.message,
         });
     }
 };
 
-export default updateBlog;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default getInitialBudget;

@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/dbConn.js";
+import Vendor from "./vendor.js";
 
 class Package extends Model {}
 
@@ -54,5 +55,9 @@ Package.init({
     tableName: 'package', // Ensure table name matches exactly
     timestamps: false,
 });
+
+Package.belongsTo(Vendor, { foreignKey: 'vendor_id' }); // Package belongs to Vendor
+// (If not already defined) Vendor has many packages
+Vendor.hasMany(Package, { foreignKey: 'vendor_id' });
 
 export default Package;

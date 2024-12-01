@@ -10,6 +10,8 @@ import { isAuthorize } from "../middlewares/auth.js";
 import updateBudgetStatus from "../controllers/Budget/updateBudgetStatus.js";
 import getBudgetById from "../controllers/Budget/getBudgetById.js";
 import deleteBudget from "../controllers/Budget/deleteBudget.js";
+import getBudgetAmount from "../controllers/Budget/getBudgetAmount.js";
+import updateBudgetAmount from "../controllers/Budget/updateBudgetAmount.js";
 
 const vendorRouter = express.Router();
 
@@ -23,5 +25,7 @@ vendorRouter.get("/get-all", isAuthorize, getAllBudget);
 vendorRouter.put("/budget-status/:id", isAuthorize, updateBudgetStatus);
 vendorRouter.get('/get-one/:id', isAuthorize, getBudgetById);
 vendorRouter.delete('/delete/:id', isAuthorize, deleteBudget);
+vendorRouter.get('/get-amount', isAuthorize, getBudgetAmount);
+vendorRouter.put('/update-amount', isAuthorize, updateBudgetAmount)
 
 export default vendorRouter;
