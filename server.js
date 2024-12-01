@@ -6,7 +6,7 @@ import { Server } from 'socket.io'; // Import Server from socket.io
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-//import connectToMongoDB from './config/dbConnMongo.js'; // MongoDB connection
+import connectToMongoDB from './config/dbConnMongo.js'; // MongoDB connection
 import path from 'path';
 import { fileURLToPath } from 'url';
 import sequelize from './config/dbConn.js'; // Ensure the path and extension are correct
@@ -134,13 +134,13 @@ const PORT = process.env.PORT || 3000;
 
 sequelize.authenticate().then(() => {
     console.log('Connected to MySQL');
-    //connectToMongoDB().then(() => {
+    connectToMongoDB().then(() => {
         server.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
-    // }).catch(err => {
-    //     console.error('Unable to connect to MongoDB:', err);
-    // });
+    }).catch(err => {
+        console.error('Unable to connect to MongoDB:', err);
+    });
 }).catch(err => {
     console.error('Unable to connect to MySQL:', err);
 });
