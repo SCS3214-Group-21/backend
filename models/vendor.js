@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize'; // Import Model and DataTypes from sequelize
 import sequelize from '../config/dbConn.js'; // Ensure the path to your DB connection file is correct and has a .js extension
+// import Booking from './booking.js';
 
 class Vendor extends Model {}
 
@@ -73,5 +74,8 @@ Vendor.init({
     tableName: 'Vendor', // Explicit table name
     timestamps: false,
 });
+
+// Vendor.hasMany(Booking, { foreignKey: 'vendor_id', as: 'booking' });
+
 
 export default Vendor; // Export User class

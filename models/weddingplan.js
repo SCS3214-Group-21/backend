@@ -77,7 +77,7 @@ WeddingPlan.init({
     },
     status: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
     },
 }, {
     sequelize,
