@@ -23,6 +23,7 @@ import clientRouter from './routes/clientRoute.js';
 import packageRouter from './routes/packageRoute.js';
 import vendorRouter from './routes/vendorprofileRoutes.js';
 import budgetRouter from './routes/budgetRoute.js';
+import progressRouter from './routes/progressRoute.js';
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server for Express and Socket.IO
@@ -98,7 +99,7 @@ app.use('/messages', messageRoutes);
 app.use('/payment', paymentRoute);
 app.use('/client/profile', clientRouter);
 app.use('/budget', budgetRouter);
-
+app.use('/progress', progressRouter);
 // Socket.IO events
 // io.on('connection', (socket) => {
 //     console.log('User connected:', socket.id);

@@ -1,13 +1,21 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/dbConn.js";
 
-class WeddingPlan extends Model {}
+class Progress extends Model {}
 
-WeddingPlan.init({
-    plan_id: {
+Progress.init({
+    progress_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+    },
+    plan_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        references: {
+            model: 'weddingplan',
+            key: 'plan_id'
+        }
     },
     client_id: {
         type: DataTypes.INTEGER,
@@ -75,15 +83,15 @@ WeddingPlan.init({
         type: DataTypes.INTEGER,
         allowNull: true,
     },
-    status: {
-        type: DataTypes.INTEGER,
+    progress: {
+        type: DataTypes.DECIMAL(5, 2), // Allows values up to 999.99, sufficient for percentages
         allowNull: true,
     },
 }, {
     sequelize,
-    modelName: 'WeddingPlan',
-    tableName: 'weddingplan', // Explicit table name
+    modelName: 'progress',
+    tableName: 'progress', // Explicit table name
     timestamps: false,
 });
 
-export default WeddingPlan;
+export default Progress;

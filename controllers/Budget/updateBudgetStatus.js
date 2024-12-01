@@ -1,10 +1,11 @@
 import WeddingPlan from "../../models/weddingplan.js";
+import Progress from "../../models/progress.js";
 
 const updateBudgetStatus = async (req, res) => {
     try {
         const { id } = req.params; // Budget ID from request params
         const clientId = req.user.id; // Client ID from authenticated user
-    
+
         // Find the budget with the provided plan_id
         const budget = await WeddingPlan.findOne({ where: { plan_id: id } });
 
@@ -23,7 +24,7 @@ const updateBudgetStatus = async (req, res) => {
 
         // Disable all other budgets (set their status to false)
         const updatePromises = allBudgets.map(async (otherBudget) => {
-            if (otherBudget.plan_id !== id) { // Skip the current budget being updated
+            if (otherBudget.plan_id !== id) {
                 return otherBudget.update({ status: false }); // Disable other budgets
             }
         });
@@ -33,22 +34,40 @@ const updateBudgetStatus = async (req, res) => {
 
         // Now update the selected budget (toggle its status)
         const updatedIsEnable = !budget.status; // Toggle the current status
-        const affectedRows = await budget.update(
-            { status: updatedIsEnable },
-            { where: { plan_id: id } }
-        );
+        await budget.update({ status: updatedIsEnable });
 
-        // Check if the update was successful
-        if (affectedRows === 0) {
-            return res.status(400).json({ message: 'Budget enable status toggle failed' });
+        // Check if a progress entry already exists for the plan
+        let progressEntry = await Progress.findOne({ where: { plan_id: id, client_id: clientId } });
+
+        if (!progressEntry) {
+            // Create a new progress entry
+            const progressData = {
+                plan_id: id,
+                client_id: clientId,
+                hotels: budget.hotels > 0 ? 0 : -1,
+                dressers: budget.dressers > 0 ? 0 : -1,
+                photography: budget.photography > 0 ? 0 : -1,
+                floral: budget.floral > 0 ? 0 : -1,
+                jewellary: budget.jewellary > 0 ? 0 : -1,
+                dancing_groups: budget.dancing_groups > 0 ? 0 : -1,
+                ashtaka: budget.ashtaka > 0 ? 0 : -1,
+                salons: budget.salons > 0 ? 0 : -1,
+                dJs: budget.dJs > 0 ? 0 : -1,
+                honeymoon: budget.honeymoon > 0 ? 0 : -1,
+                cars: budget.cars > 0 ? 0 : -1,
+                invitation_cards: budget.invitation_cards > 0 ? 0 : -1,
+                poruwa: budget.poruwa > 0 ? 0 : -1,
+                catering: budget.catering > 0 ? 0 : -1,
+                progress: 0 // Initialize progress (can be calculated later)
+            };
+
+            progressEntry = await Progress.create(progressData);
         }
-
-        // Retrieve the updated budget
-        const updatedBudget = await WeddingPlan.findOne({ where: { plan_id: id } });
 
         res.status(200).json({
             message: 'Budget enable status toggled successfully',
-            budget: updatedBudget, // Send the updated budget as a response
+            budget: budget, // Send the updated budget as a response
+            progress: progressEntry, // Send the created or existing progress entry
         });
 
     } catch (error) {
