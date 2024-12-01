@@ -1,5 +1,6 @@
-import { Model, DataTypes } from 'sequelize'; // Import Model and DataTypes from sequelize
-import sequelize from '../config/dbConn.js'; // Make sure your DB connection file is correct
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/dbConn.js';
+import Vendor from './vendor.js';
 
 class Booking extends Model {}
 
@@ -13,7 +14,7 @@ Booking.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'vendors', // Assumes 'vendors' is the name of the vendor table
+            model: 'Vendor', // Ensure this matches the Vendor table name
             key: 'id',
         },
         onUpdate: 'CASCADE',
@@ -22,12 +23,6 @@ Booking.init({
     client_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: 'clients', // Assumes 'clients' is the name of the client table
-            key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
     },
     vendor_type: {
         type: DataTypes.STRING(255),
@@ -40,23 +35,17 @@ Booking.init({
     package_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: 'packages', // Assumes 'packages' is the name of the package table
-            key: 'package_id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
     },
     package_name: {
         type: DataTypes.STRING(255),
         allowNull: false,
     },
     booking_date: {
-        type: DataTypes.DATEONLY, // Use DATEONLY for date without time
+        type: DataTypes.DATEONLY,
         allowNull: false,
     },
     booking_time: {
-        type: DataTypes.TIME, // Use TIME for time only
+        type: DataTypes.TIME,
         allowNull: false,
     },
     guest_count: {
@@ -64,15 +53,20 @@ Booking.init({
         allowNull: false,
     },
     status: {
-        type: DataTypes.STRING(50), // Adjust length based on your status options
+        type: DataTypes.STRING(50),
         allowNull: false,
-        defaultValue: 'Pending', // Default status can be 'Pending', 'Confirmed', etc.
+        defaultValue: 'Pending',
     },
 }, {
-    sequelize, // Pass the sequelize instance
-    modelName: 'Booking', // Define the model name
-    tableName: 'booking', // Explicitly define the table name if it differs
-    timestamps: false, // Disable automatic timestamps (createdAt, updatedAt)
+    sequelize,
+    modelName: 'Booking',
+    tableName: 'booking',
+    timestamps: false,
 });
 
-export default Booking; // Export the Booking model
+// Define association
+Booking.belongsTo(Vendor, { foreignKey: 'vendor_id', as: 'vendor' });
+
+
+export default Booking;
+

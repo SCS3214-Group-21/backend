@@ -4,9 +4,24 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import Payment from '../../models/payment.js';
 import sequelize from '../../config/dbConn.js';
+import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; // Ensure this is set in your .env file
+const IV_LENGTH = 16; // AES-256-CBC typically uses 16 bytes for IV
+
+// Function to encrypt the payment key
+const encrypt = (text) => {
+    const iv = crypto.randomBytes(IV_LENGTH); // Generate a random IV
+    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return iv.toString('hex') + ':' + encrypted; // Return both IV and encrypted text
+};
+
 
 const updateProfile = async (req, res) => {
     try {
@@ -46,6 +61,9 @@ const updateProfile = async (req, res) => {
             const vendor = await Vendor.findOne({ where: { id: userId } });
             const payment = await Payment.findOne({ where: { user_id: userId } });
 
+            // Encrypt the payment_key before storing
+            const encryptedPaymentKey = encrypt(payment_key);
+
             if (vendor) {
                 await vendor.update(
                     {
@@ -63,8 +81,9 @@ const updateProfile = async (req, res) => {
                     },
                     { transaction }
                 );
+                // Use the encrypted payment key when updating the payment record
                 await Payment.update(
-                    { payment_key },
+                    { payment_key: encryptedPaymentKey }, // Store the encrypted payment key
                     { where: { user_id: userId }, transaction }
                 );
             } else {
@@ -86,7 +105,7 @@ const updateProfile = async (req, res) => {
                     { transaction }
                 );
                 await Payment.create(
-                    { user_id: userId, payment_key },
+                    { user_id: userId, payment_key: encryptedPaymentKey },
                     { transaction }
                 );
             }
