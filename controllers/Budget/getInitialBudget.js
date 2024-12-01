@@ -1,19 +1,25 @@
 import WeddingPlan from "../../models/weddingplan.js";
 import Package from "../../models/package.js";
 import User from "../../models/user.js";
-import sequelize from "../../config/dbConn.js";
+import Vendor from "../../models/vendor.js";
+import Client from "../../models/client.js";
+// import sequelize from "../../config/dbConn.js";
 import { Op } from "sequelize";
 
 const getInitialBudget = async (req, res) => {
     try {
         const { id } = req.params;
+        const client_id = req.user.id
 
-        // Fetch the budget details for the given plan ID
+        // Fetch the budget and client details
         const budgetDetails = await WeddingPlan.findOne({ where: { plan_id: id } });
-
         if (!budgetDetails) {
             return res.status(404).json({ message: "Budget Not Found" });
         }
+
+        // Get client location
+        const clientDetails = await Client.findOne({ where: { id: client_id } });
+        const clientLocation = clientDetails.location;
 
         // Extract the budget amounts for different services
         const servicesBudget = {
@@ -40,26 +46,48 @@ const getInitialBudget = async (req, res) => {
             if (budget !== null && budget > 0) {
                 console.log(`Processing service: ${service}, Budget: ${budget}`);
 
-                // Fetch a package matching the service category and budget
-                const packageSuggestion = await Package.findAll({
+                // Fetch all packages matching the service category
+                const packages = await Package.findAll({
                     include: [
                         {
                             model: User,
-                            attributes: [], // We don't need User details in the final result
-                            where: { role: service }, // Match service with the User's role
+                            attributes: [], // Exclude User details
+                            where: { role: service },
+                        },
+                        {
+                            model: Vendor,
+                            attributes: ["city", "branch"], // Include vendor location details
+                            where: { role: service },
                         },
                     ],
                     where: {
-                        amount: { [Op.lte]: budget }, // Budget constraint
+                        amount: { [Op.lte]: budget }, // Within budget
                         is_enable: true, // Only enabled packages
                     },
-                    order: sequelize.literal("RAND()"), // Randomize the selection
-                    limit: 1, // Get one package
+                });
+                
+                console.log(`Found ${packages.length} packages for service: ${service}`);
+                
+
+                // Filter and prioritize packages by location
+                const locationBasedPackages = packages.filter(pkg => {
+                    const vendorCity = pkg.Vendor.city;
+                    const vendorBranches = JSON.parse(pkg.Vendor.branch || "[]");
+
+                    // Check if the vendor's city or branches match the client's location
+                    return (
+                        vendorCity === clientLocation ||
+                        vendorBranches.includes(clientLocation)
+                    );
                 });
 
-                // Add the suggestion to the response
-                suggestions[service] =
-                    packageSuggestion.length > 0 ? packageSuggestion[0] : null;
+                // If location-based packages exist, prioritize the most expensive package
+                const selectedPackage =
+                    locationBasedPackages.length > 0
+                        ? locationBasedPackages.sort((a, b) => b.amount - a.amount)[0] // Select the most expensive location-matching package
+                        : packages.sort((a, b) => b.amount - a.amount)[0]; // Fallback: Select the most expensive package
+
+                suggestions[service] = selectedPackage || null;
             } else {
                 suggestions[service] = null; // No budget allocated
             }

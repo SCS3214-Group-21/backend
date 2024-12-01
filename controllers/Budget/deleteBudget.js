@@ -1,9 +1,9 @@
 import WeddingPlan from '../../models/weddingplan.js';
+import Progress from '../../models/progress.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 
-// Determine the current directory name
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -31,10 +31,22 @@ const deleteBudget = async (req, res) => {
             return res.status(403).json({ message: 'This budget cannot be deleted because it is active' });
         }
 
+        // Check for associated progress records
+        const associatedProgress = await Progress.findAll({ where: { plan_id: id } });
+
+        // If associated progress exists, delete them
+        if (associatedProgress.length > 0) {
+            await Progress.destroy({ where: { plan_id: id } });
+        }
+
         // Delete the old image file if it exists
         const imagePath = path.join(__dirname, `../../uploads/${budget.img}`);
         if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath);
+            try {
+                fs.unlinkSync(imagePath);
+            } catch (err) {
+                console.error(`Failed to delete image file: ${imagePath}`, err);
+            }
         }
 
         // Delete the budget from the database

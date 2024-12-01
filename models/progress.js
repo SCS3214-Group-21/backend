@@ -15,7 +15,9 @@ Progress.init({
         references: {
             model: 'weddingplan',
             key: 'plan_id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
     },
     client_id: {
         type: DataTypes.INTEGER,
