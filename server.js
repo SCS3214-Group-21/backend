@@ -6,7 +6,7 @@ import { Server } from 'socket.io'; // Import Server from socket.io
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import connectToMongoDB from './config/dbConnMongo.js'; // MongoDB connection
+//import connectToMongoDB from './config/dbConnMongo.js'; // MongoDB connection
 import path from 'path';
 import { fileURLToPath } from 'url';
 import sequelize from './config/dbConn.js'; // Ensure the path and extension are correct
@@ -19,11 +19,14 @@ import conversationRoutes from './routes/conversationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import paymentRoute from './routes/paymentRoute.js';
 import clientRouter from './routes/clientRoute.js';
+import quotationRouter from './routes/quotationRoute.js';
 
 import packageRouter from './routes/packageRoute.js';
 import vendorRouter from './routes/vendorprofileRoutes.js';
 import budgetRouter from './routes/budgetRoute.js';
 import progressRouter from './routes/progressRoute.js';
+import bookingRouter from './routes/bookingRoute.js';
+
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server for Express and Socket.IO
@@ -100,6 +103,9 @@ app.use('/payment', paymentRoute);
 app.use('/client/profile', clientRouter);
 app.use('/budget', budgetRouter);
 app.use('/progress', progressRouter);
+app.use('/quotation', quotationRouter);
+app.use('/booking', bookingRouter);
+
 // Socket.IO events
 // io.on('connection', (socket) => {
 //     console.log('User connected:', socket.id);
@@ -130,13 +136,13 @@ const PORT = process.env.PORT || 3000;
 
 sequelize.authenticate().then(() => {
     console.log('Connected to MySQL');
-    connectToMongoDB().then(() => {
+    //connectToMongoDB().then(() => {
         server.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
-    }).catch(err => {
-        console.error('Unable to connect to MongoDB:', err);
-    });
+    // }).catch(err => {
+    //     console.error('Unable to connect to MongoDB:', err);
+    // });
 }).catch(err => {
     console.error('Unable to connect to MySQL:', err);
 });
