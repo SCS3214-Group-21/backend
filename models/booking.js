@@ -1,6 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/dbConn.js';
 import Vendor from './vendor.js';
+import Client from './client.js';
 
 class Booking extends Model {}
 
@@ -14,7 +15,7 @@ Booking.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Vendor', // Ensure this matches the Vendor table name
+            model: 'Vendor',
             key: 'id',
         },
         onUpdate: 'CASCADE',
@@ -23,6 +24,12 @@ Booking.init({
     client_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: 'Client', // Referencing the Client model
+            key: 'id', // Referencing the id column in the Client table
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
     },
     vendor_type: {
         type: DataTypes.STRING(255),
@@ -64,9 +71,9 @@ Booking.init({
     timestamps: false,
 });
 
-// Define association
+// Define associations
 Booking.belongsTo(Vendor, { foreignKey: 'vendor_id', as: 'vendor' });
-
+Booking.belongsTo(Client, { foreignKey: 'client_id', targetKey: 'id', as: 'client' });
 
 export default Booking;
 
