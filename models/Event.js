@@ -1,7 +1,6 @@
 import { Model, DataTypes} from "sequelize";
 import sequelize from "../config/dbConn.js";
 import User from "./user.js";
-import user from "./user.js";
 
 class Event extends Model {}
 
@@ -9,12 +8,7 @@ Event.init({
     event_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        references : {
-            model: 'calendar',
-            key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        autoIncrement:true,
     },
     title: {
         type: DataTypes.STRING(225),
