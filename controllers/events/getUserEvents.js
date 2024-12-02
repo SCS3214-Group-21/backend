@@ -1,5 +1,4 @@
 import Event from "../../models/Event.js"
-import message from "../../models/Message.js";
 
 export const getUserEvents = async (req, res) => {
     try {
@@ -10,7 +9,7 @@ export const getUserEvents = async (req, res) => {
         if (userEvents.length === 0) {
             return res.status(200).json({
                 message: 'No Events found for this user',
-                package: []
+                events: []
             })
         }
 
