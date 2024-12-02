@@ -4,6 +4,7 @@ import addBooking from '../controllers/booking/addBooking.js'
 import getBooking from '../controllers/booking/getBooking.js';
 import getBookingByVendor from '../controllers/booking/getBookingByVendor.js';
 import updateBookingStatus from '../controllers/booking/updateBookingStatus.js'
+import searchBookingByType from '../controllers/booking/searchBookingByType.js';
 
 const bookingRouter = express.Router();
 // Grouped routes for better clarity
@@ -17,6 +18,8 @@ bookingRouter.get('/vendor/orders', isAuthorize, getBookingByVendor); // Get all
 
 
 bookingRouter.patch('/updateStatus/:id', isAuthorize, updateBookingStatus);
+
+bookingRouter.get('/searchByType', isAuthorize, searchBookingByType);
 
 
 export default bookingRouter;
