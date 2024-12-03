@@ -1,4 +1,5 @@
 import Blog from "../../models/blog.js";
+import Notification from "../../models/Notification.js"
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -34,6 +35,15 @@ const deleteBlog = async (req, res) => {
 
         // Delete the blog from the database
         await Blog.destroy({ where: { blog_id: blogId } });
+
+        // creating a notification
+        await Notification.create({
+            title: `Blog updated successfully`,
+            description: `Description: ${blog.title} has been deleted`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
 
         res.status(200).json({
             message: 'Blog deleted successfully',

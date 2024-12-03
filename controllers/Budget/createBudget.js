@@ -1,4 +1,5 @@
 import WeddingPlan from "../../models/weddingplan.js";
+import Notification from "../../models/Notification.js"
 
 const createBudget = async (req, res) => {
   try {
@@ -36,6 +37,15 @@ const createBudget = async (req, res) => {
       poruwa,
       catering,
     });
+
+    // creating a notification
+    await Notification.create({
+      title: `New Budget Created`,
+      description: ``,
+      priority: 'low',
+      viewed: false,
+      user_id: req.user.id,
+    })
 
     res.status(201).json({
       message: "Budget created successfully",
