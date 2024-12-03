@@ -1,4 +1,5 @@
 import Event from "../../models/Event.js"
+import Notification from "../../models/Notification.js"
 
 const updateEvent = async (req, res) => {
     try {
