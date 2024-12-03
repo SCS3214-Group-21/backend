@@ -37,6 +37,15 @@ const createBudget = async (req, res) => {
       catering,
     });
 
+    // creating a notification
+    await Notification.create({
+      title: `New Budget Created`,
+      description: ``,
+      priority: 'low',
+      viewed: false,
+      user_id: req.user.id,
+    })
+
     res.status(201).json({
       message: "Budget created successfully",
       budget: newBudget,
