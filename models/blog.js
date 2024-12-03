@@ -41,6 +41,10 @@ Blog.init({
         allowNull: false,
         defaultValue: DataTypes.NOW
     },
+    likes: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
 }, {
     sequelize, // Pass the sequelize instance
     modelName: 'Blog', // Define the model name

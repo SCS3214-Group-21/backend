@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator'; // Update import for express-validator
 import bcrypt from 'bcryptjs'; // Update import for bcryptjs
 import User from '../../models/user.js'; // Update import for User model
+import BanUsers from '../../models/banusers.js';
 import jwt from 'jsonwebtoken'; // Update import for jsonwebtoken
 const { JWT_SECRET } = process.env; // No change needed here
 
@@ -26,6 +27,11 @@ const login = async (req, res) => {
             return res.status(401).send({ msg: 'Password incorrect!' });
         }
 
+        const isBanned = await BanUsers.findOne({ where: { user_id: user.id } });
+        if (isBanned) {
+            return res.status(401).send({ msg: 'You are banned'})
+        }
+        
         const token = jwt.sign({ id: user.id, is_admin: user.is_admin }, JWT_SECRET, { expiresIn: '3h' });
 
         // Update the last login time

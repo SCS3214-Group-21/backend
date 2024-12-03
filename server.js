@@ -26,6 +26,11 @@ import vendorRouter from './routes/vendorprofileRoutes.js';
 import budgetRouter from './routes/budgetRoute.js';
 import progressRouter from './routes/progressRoute.js';
 import bookingRouter from './routes/bookingRoute.js';
+import adminDashboardRoute from './routes/adminDashboardRoute.js';
+import vendorDashboardRoute from './routes/vendorDashboardRoute.js';
+import userManagementRoute from './routes/userManagementRoutes.js';
+import notificationRoute from "./routes/notificationRoute.js";
+import eventRouter from "./routes/eventRoutes.js";
 
 
 const app = express();
@@ -71,7 +76,8 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');  // Frontend URL
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');  // Allow methods
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');  // Allow headers
-    res.setHeader('Content-Security-Policy', "img-src 'self' http://localhost:3000 http://localhost:5173;");  // Allow images from both frontend and backend
+    res.setHeader('Content-Security-Policy', "img-src 'self' http://localhost:5000 http://localhost:5173;");  // Allow images from both frontend and backend
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     next();
 });
 
@@ -85,7 +91,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // app.use((req, res, next) => {
 //     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');  // Allow cross-origin requests
 //     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');  // Frontend URL
-//     res.setHeader('Content-Security-Policy', "img-src 'self' http://localhost:3000;");  // Allow images from the backend
+//     res.setHeader('Content-Security-Policy', "img-src 'self' http://localhost:5000;");  // Allow images from the backend
 //     next();
 // });
 
@@ -105,6 +111,11 @@ app.use('/budget', budgetRouter);
 app.use('/progress', progressRouter);
 app.use('/quotation', quotationRouter);
 app.use('/booking', bookingRouter);
+app.use('/admin', adminDashboardRoute);
+app.use('/vendor-dashboard', vendorDashboardRoute);
+app.use('/users', userManagementRoute);
+app.use('/notification', notificationRoute)
+app.use('/event', eventRouter)
 
 
 io.on('connection', (socket) => {
@@ -139,7 +150,7 @@ app.use((err, req, res, next) => {
 });
 
 // Database and Server Initialization
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 sequelize.authenticate().then(() => {
     console.log('Connected to MySQL');

@@ -7,8 +7,11 @@ export const getAllBlog = async (req, res) => {
         const blogs = await Blog.findAll();
 
         // Check if there are any blogs
-        if (!blogs.length) {
-            return res.status(404).json({ message: 'No blogs found' });
+        if (blogs.length === 0) {
+            return res.status(200).json({ 
+                message: 'No blogs found',
+                blogs 
+            });
         }
 
         // Respond with the list of blogs

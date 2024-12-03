@@ -1,4 +1,5 @@
 import Package from "../../models/package.js";
+import Notification from "../../models/Notification.js"
 
 // Function to create a new package
 const createPackage = async (req, res) => {
@@ -33,6 +34,15 @@ const createPackage = async (req, res) => {
             description,
             is_enable: true, // Set default enabled status if required
         });
+
+        // creating a notification
+        await Notification.create({
+            title: `New Package Created`,
+            description: `Description: ${name}`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
 
         // Send the response
         res.status(201).json({

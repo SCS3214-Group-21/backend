@@ -1,4 +1,5 @@
 import Blog from "../../models/blog.js";
+import Notification from "../../models/Notification.js"
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -51,6 +52,15 @@ const updateBlog = async (req, res) => {
         if (updatedBlog[0] === 0) {
             return res.status(400).json({ message: 'Blog update failed' });
         }
+
+        // creating a notification
+        await Notification.create({
+            title: `Your blog has been changed!`,
+            description: `Description: ${title}`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
 
         res.status(200).json({
             message: 'Blog updated successfully',

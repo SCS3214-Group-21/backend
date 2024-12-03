@@ -9,8 +9,11 @@ export const getUserBlogs = async (req, res) => {
         const userBlogs = await Blog.findAll({ where: { id: userId } });
 
         // Check if there are any blogs for the user
-        if (!userBlogs.length) {
-            return res.status(404).json({ message: 'No blogs found for this user' });
+        if (userBlogs.length === 0) {
+            return res.status(200).json({ 
+                message: 'No blogs found for this user', 
+                blogs: []  // Return an empty array
+            });
         }
 
         // Respond with the list of blogs

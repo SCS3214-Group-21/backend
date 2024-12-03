@@ -1,4 +1,5 @@
 import Package from "../../models/package.js";
+import Notification from "../../models/Notification.js"
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -60,6 +61,15 @@ const updatePackage = async (req, res) => {
         if (affectedRows === 0) {
             return res.status(400).json({ message: 'Package update failed0' });
         }
+
+        // creating a notification
+        await Notification.create({
+            title: `Package Changed: ${name}`,
+            description: `Package details has been changed`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
 
         res.status(200).json({
             message: 'Package updated successfully',

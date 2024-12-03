@@ -25,8 +25,16 @@ const register = async (req, res) => {
             role: req.body.role  // Assume role is part of the User model
         });
 
-        const mailSubject = 'Mail Verification';
-        const content = `<p>Hi, Please <a href="${process.env.APP_URL}/mail-verification?token=${token}">Verify</a> your email.</p>`;
+        const mailSubject = 'Verify Your Email Address';
+        const content = `<p>Dear Customer,</p>
+            <p>Thank you for signing up with DreamWed. Please verify your email address to complete your registration and start using our services.</p>
+            <p>Click the link below to verify your email:</p>
+            <p><a href="${process.env.APP_URL}/mail-verification?token=${token}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Verify Email</a></p>
+            <p>If the button above does not work, you can also copy and paste the following link into your browser:</p>
+            <p>${process.env.APP_URL}/mail-verification?token=${token}</p>
+            <p>If you did not create an account with us, please ignore this email.</p>
+            <p>Thank you for choosing DreamWed!</p>
+            <p>Best regards,<br/>DreamWed Team</p>`;
         sendMail(req.body.email, mailSubject, content);
 
         return res.status(201).send({
