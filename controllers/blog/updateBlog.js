@@ -52,6 +52,15 @@ const updateBlog = async (req, res) => {
             return res.status(400).json({ message: 'Blog update failed' });
         }
 
+        // creating a notification
+        await Notification.create({
+            title: `Your blog has been changed!`,
+            description: `Description: ${title}`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
+
         res.status(200).json({
             message: 'Blog updated successfully',
             blog: updatedBlog[1][0], // Get the updated blog from the response
