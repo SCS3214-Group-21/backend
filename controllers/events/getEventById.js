@@ -12,7 +12,7 @@ const getEventById = async (req, res) => {
 
         res.status(200).json({
             message: 'Event retrieved successfully',
-            event
+            event: event,
         })
     }
     catch (error) {

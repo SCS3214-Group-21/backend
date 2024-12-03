@@ -29,6 +29,7 @@ import bookingRouter from './routes/bookingRoute.js';
 import adminDashboardRoute from './routes/adminDashboardRoute.js';
 import vendorDashboardRoute from './routes/vendorDashboardRoute.js';
 import userManagementRoute from './routes/userManagementRoutes.js';
+import notificationRoute from "./routes/notificationRoute.js";
 
 
 const app = express();
@@ -112,6 +113,7 @@ app.use('/booking', bookingRouter);
 app.use('/admin', adminDashboardRoute);
 app.use('/vendor-dashboard', vendorDashboardRoute);
 app.use('/users', userManagementRoute);
+app.use('/notification', notificationRoute)
 
 // Socket.IO events
 // io.on('connection', (socket) => {

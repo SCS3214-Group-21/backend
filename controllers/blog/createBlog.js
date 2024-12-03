@@ -1,4 +1,5 @@
 import Blog from "../../models/blog.js";
+import Notification from "../../models/Notification.js"
 
 // Function to create a new blog post
 const createBlog = async (req, res) => {
@@ -16,6 +17,15 @@ const createBlog = async (req, res) => {
             img: `images/${req.file.filename}`,  // Correctly handle file upload path
             description
         });
+
+        // creating a notification
+        await Notification.create({
+            title: `New Blog Created`,
+            description: `Description: ${title}`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
 
         res.status(201).json({
             message: 'Blog created successfully',

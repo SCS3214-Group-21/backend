@@ -1,4 +1,5 @@
 import Package from "../../models/package.js";
+import Notification from "../../models/Notification.js"
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -34,6 +35,15 @@ const deletePackage = async (req, res) => {
 
         // Delete the package from the database
         await Package.destroy({ where: { package_id: packageId } });
+
+        // creating a notification
+        await Notification.create({
+            title: `Package Deleted: ${packageItem.name}`,
+            description: `Package removed`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
 
         res.status(200).json({
             message: 'Package deleted successfully',

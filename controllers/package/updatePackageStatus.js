@@ -1,4 +1,5 @@
 import Package from "../../models/package.js";
+import Notification from "../../models/Notification.js"
 
 // Function to toggle the `is_enable` status of a specific package by its ID
 const updatePackageStatus = async (req, res) => {
@@ -35,6 +36,15 @@ const updatePackageStatus = async (req, res) => {
         if (affectedRows === 0) {
             return res.status(400).json({ message: 'Package enable status toggle failed' });
         }
+
+        // creating a notification
+        await Notification.create({
+            title: `Package ${packageItem.name} is ${packageItem.is_enable}`,
+            description: `Package has been ${packageItem.is_enable ? "enabled" : "disabled"}`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
 
         res.status(200).json({
             message: 'Package enable status toggled successfully',
