@@ -34,6 +34,24 @@ const createBooking = async (req, res) => {
             status,
         });
 
+        // creating a notification: @client
+        await Notification.create({
+            title: `Booking Has been Placed for ${vendor_type}`,
+            description: `Description: On ${booking_date} at ${booking_time}`,
+            priority: 'high',
+            viewed: false,
+            user_id: client_id,
+        })
+
+        // creating a notification: @vendor
+        await Notification.create({
+            title: `Booking Has been Placed for your ${package_name}`,
+            description: `Description: On ${booking_date} at ${booking_time}`,
+            priority: 'high',
+            viewed: false,
+            user_id: vendor_id,
+        })
+
         res.status(201).json({
             message: 'Booking created successfully',
             booking: newBooking,
