@@ -15,7 +15,7 @@ const getBudgetAmount = async (req, res) => {
         }
 
         // Return the budget from the found client
-        return res.status(200).json({ budget: client.budget });
+        return res.status(200).json({ budget: client.budget, guest: client.guest_count });
     } catch (error) {
         console.error('Error fetching client budget:', error);
         return res.status(500).json({ message: 'Server error' });
