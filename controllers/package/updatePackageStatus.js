@@ -36,6 +36,15 @@ const updatePackageStatus = async (req, res) => {
             return res.status(400).json({ message: 'Package enable status toggle failed' });
         }
 
+        // creating a notification
+        await Notification.create({
+            title: `Package ${packageItem.name} is ${packageItem.is_enable}`,
+            description: `Package has been ${packageItem.is_enable ? "enabled" : "disabled"}`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
+
         res.status(200).json({
             message: 'Package enable status toggled successfully',
             package: updatedPackages[0], // Get the updated package from the response
