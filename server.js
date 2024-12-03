@@ -37,12 +37,12 @@ const app = express();
 const server = http.createServer(app); // Create an HTTP server for Express and Socket.IO
 
 // Initialize Socket.IO on the HTTP server
-// const io = new Server(server, { // Renamed SocketIOServer to Server
-//     cors: {
-//         origin: 'http://localhost:5173', // Set to your frontend URL
-//         methods: ['GET', 'POST'],
-//     },
-// });
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:5173', // Replace with your frontend origin
+        methods: ['GET', 'POST'],
+    },
+});
 
 // Middleware
 app.use(helmet()); // Security headers
@@ -103,8 +103,8 @@ app.use('/blog', blogRouter);
 app.use('/package', packageRouter);
 app.use('/vendor', vendorRouter);
 app.use('/chat', chatRoute); // Add the chat route
-app.use('/conversation', conversationRoutes);
-app.use('/messages', messageRoutes);
+app.use('/conversation', conversationRoutes(io));
+app.use('/messages', messageRoutes(io));
 app.use('/payment', paymentRoute);
 app.use('/client/profile', clientRouter);
 app.use('/budget', budgetRouter);
@@ -117,22 +117,29 @@ app.use('/users', userManagementRoute);
 app.use('/notification', notificationRoute)
 app.use('/event', eventRouter)
 
-// Socket.IO events
-// io.on('connection', (socket) => {
-//     console.log('User connected:', socket.id);
 
-//     socket.on('joinRoom', (roomId) => {
-//         socket.join(roomId);
-//     });
+io.on('connection', (socket) => {
+    console.log('User connected:', socket.id);
 
-//     socket.on('sendMessage', (messageData) => {
-//         io.to(messageData.conversationId).emit('receiveMessage', messageData);
-//     });
+    // Handle user joining a conversation room
+    socket.on('joinRoom', (roomId) => {
+        console.log(`User joined room: ${roomId}`);
+        socket.join(roomId);
+    });
 
-//     socket.on('disconnect', () => {
-//         console.log('User disconnected:', socket.id);
-//     });
-// });
+    // Handle sending messages
+    socket.on('sendMessage', (messageData) => {
+        console.log('Message received:', messageData);
+
+        // Broadcast the message to the specific room
+        io.to(messageData.conversationId).emit('receiveMessage', messageData);
+    });
+
+    // Handle user disconnecting
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

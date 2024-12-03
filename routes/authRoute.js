@@ -5,6 +5,8 @@ import { signUpValidation, loginValidation, forgetValidation } from '../middlewa
 import register from '../controllers/auth/register.js';
 import login from '../controllers/auth/login.js';
 import forgetPassword from '../controllers/auth/forgetPassword.js';
+import { isAuthorize } from "../middlewares/auth.js";
+import getUserEmail from '../controllers/auth/fetchEmailForHeader.js';
 
 const router = express.Router(); // Create a new router instance
 
@@ -13,5 +15,6 @@ router.post('/register', signUpValidation, register);
 router.post('/login', loginValidation, login);
 // router.get('/get-user', isAuthorize, getUser);
 router.post('/forget-password', forgetValidation, forgetPassword);
+router.get('/email',isAuthorize,getUserEmail);
 
 export default router; // Export the router
