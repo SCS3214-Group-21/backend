@@ -56,8 +56,28 @@ export const createCheckoutSession = async (req, res) => {
             metadata: { vendorId: vendorId },  // Include vendor ID to track the payment
         });
 
+        // Creating a notification: @success
+        await Notification.create({
+            title: 'Payment Successful',
+            description: `Your payment was successful. Reference ID: ${session.id}`,
+            priority: 'high',
+            viewed: false,
+            user_id: req.user.id,
+        })
+
         res.status(200).json({ id: session.id });
-    } catch (error) {
+    }
+    catch (error) {
+
+        // Creating a notification: @fail
+        await Notification.create({
+            title: 'Payment Failed',
+            description: `Your payment was unsuccessful. Reason: ${error.message}`,
+            priority: 'high',
+            viewed: false,
+            user_id: req.user.id,
+        })
+
         console.error('Error creating checkout session:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
