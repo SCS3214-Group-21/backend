@@ -1,4 +1,5 @@
 import Booking from "../../models/booking.js";
+import Notification from "../../models/Notification.js"
 
 // Function to create a new booking
 const createBooking = async (req, res) => {
@@ -33,6 +34,24 @@ const createBooking = async (req, res) => {
             guest_count,
             status,
         });
+
+        // creating a notification: @client
+        await Notification.create({
+            title: `Booking Has been Placed for ${vendor_type}`,
+            description: `Description: On ${booking_date} at ${booking_time}`,
+            priority: 'high',
+            viewed: false,
+            user_id: client_id,
+        })
+
+        // creating a notification: @vendor
+        await Notification.create({
+            title: `Booking Has been Placed for your ${package_name}`,
+            description: `Description: On ${booking_date} at ${booking_time}`,
+            priority: 'high',
+            viewed: false,
+            user_id: vendor_id,
+        })
 
         res.status(201).json({
             message: 'Booking created successfully',
