@@ -61,6 +61,15 @@ const updatePackage = async (req, res) => {
             return res.status(400).json({ message: 'Package update failed0' });
         }
 
+        // creating a notification
+        await Notification.create({
+            title: `Package Changed: ${name}`,
+            description: `Package details has been changed`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
+
         res.status(200).json({
             message: 'Package updated successfully',
             package: updatedPackages[0], // Get the updated package from the response
