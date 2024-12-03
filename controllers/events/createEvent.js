@@ -1,4 +1,5 @@
 import Event from "../../models/Event.js"
+import Notification from "../../models/Notification.js"
 
 const createEvent = async (req, res) => {
     try {
@@ -15,6 +16,15 @@ const createEvent = async (req, res) => {
             event_date: event_date,
             start_time: start_time,
             end_time: end_time,
+        })
+
+        // creating a notification
+        await Notification.create({
+            title: `New Event Created: ${title}`,
+            description: `Check Calendar for more info`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
         })
 
         res.status(201).json({
