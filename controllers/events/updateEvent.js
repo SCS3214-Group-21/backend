@@ -1,4 +1,5 @@
 import Event from "../../models/Event.js"
+import Notification from "../../models/Notification.js"
 
 const updateEvent = async (req, res) => {
     try {
@@ -25,6 +26,15 @@ const updateEvent = async (req, res) => {
         if (affectedRows === 0) {
             return res.status(400).json({ message: 'Event update failed' })
         }
+
+        // creating a notification
+        await Notification.create({
+            title: `Event Changed: ${title}`,
+            description: `Check Calendar for more info`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
 
         res.status(200).json({
             message: 'Event updated successfully',
