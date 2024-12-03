@@ -39,13 +39,19 @@ Notification.init({
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW
+    },
+    updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     }
 }, {
     sequelize,
     modelName: 'Notification',
     tableName: 'notifications',
     timestamps: true,
-    createdAt: 'created_at'
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
 })
 
 Notification.belongsTo(User, { foreignKey: 'user_id' })
