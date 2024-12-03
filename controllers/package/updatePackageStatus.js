@@ -1,4 +1,5 @@
 import Package from "../../models/package.js";
+import Notification from "../../models/Notification.js"
 
 // Function to toggle the `is_enable` status of a specific package by its ID
 const updatePackageStatus = async (req, res) => {

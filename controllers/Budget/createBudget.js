@@ -1,4 +1,5 @@
 import WeddingPlan from "../../models/weddingplan.js";
+import Notification from "../../models/Notification.js"
 
 const createBudget = async (req, res) => {
   try {

@@ -1,4 +1,5 @@
 import Blog from "../../models/blog.js";
+import Notification from "../../models/Notification.js"
 
 // Function to create a new blog post
 const createBlog = async (req, res) => {
