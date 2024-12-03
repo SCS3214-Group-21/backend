@@ -17,6 +17,15 @@ const createBlog = async (req, res) => {
             description
         });
 
+        // creating a notification
+        await Notification.create({
+            title: `New Blog Created`,
+            description: `Description: ${title}`,
+            priority: 'normal',
+            viewed: false,
+            user_id: req.user.id,
+        })
+
         res.status(201).json({
             message: 'Blog created successfully',
             blog: newBlog,
