@@ -26,6 +26,7 @@ import vendorRouter from './routes/vendorprofileRoutes.js';
 import budgetRouter from './routes/budgetRoute.js';
 import progressRouter from './routes/progressRoute.js';
 import bookingRouter from './routes/bookingRoute.js';
+import notificationRoute from "./routes/notificationRoute.js";
 
 
 const app = express();
@@ -105,6 +106,7 @@ app.use('/budget', budgetRouter);
 app.use('/progress', progressRouter);
 app.use('/quotation', quotationRouter);
 app.use('/booking', bookingRouter);
+app.use('/notification', notificationRoute)
 
 // Socket.IO events
 // io.on('connection', (socket) => {
