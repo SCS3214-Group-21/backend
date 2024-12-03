@@ -27,6 +27,7 @@ import budgetRouter from './routes/budgetRoute.js';
 import progressRouter from './routes/progressRoute.js';
 import bookingRouter from './routes/bookingRoute.js';
 import notificationRoute from "./routes/notificationRoute.js";
+import eventRouter from "./routes/eventRoutes.js";
 
 
 const app = express();
@@ -107,6 +108,7 @@ app.use('/progress', progressRouter);
 app.use('/quotation', quotationRouter);
 app.use('/booking', bookingRouter);
 app.use('/notification', notificationRoute)
+app.use('/event', eventRouter)
 
 // Socket.IO events
 // io.on('connection', (socket) => {
