@@ -15,6 +15,24 @@ const deleteBooking = async (req, res) => {
         // Delete the booking
         await booking.destroy();
 
+        // creating a notification: @client
+        await Notification.create({
+            title: `Booking Has been Deleted for ${booking.vendor_type}`,
+            description: ``,
+            priority: 'high',
+            viewed: false,
+            user_id: booking.client_id,
+        })
+
+        // creating a notification: @vendor
+        await Notification.create({
+            title: `Booking Has been Deleted for your ${booking.package_name}`,
+            description: ``,
+            priority: 'high',
+            viewed: false,
+            user_id: booking.vendor_id,
+        })
+
         res.status(200).json({
             message: 'Booking deleted successfully',
         });
