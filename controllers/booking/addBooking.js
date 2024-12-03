@@ -1,4 +1,5 @@
 import Booking from "../../models/booking.js";
+import Notification from "../../models/Notification.js"
 
 // Function to create a new booking
 const createBooking = async (req, res) => {

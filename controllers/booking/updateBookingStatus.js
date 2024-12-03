@@ -1,4 +1,5 @@
 import Booking from "../../models/booking.js";
+import Notification from "../../models/Notification.js"
 
 const updateBookingStatus = async (req, res) => {
     try {
@@ -13,6 +14,24 @@ const updateBookingStatus = async (req, res) => {
 
         booking.status = status;
         await booking.save();
+
+        // creating a notification: @client
+        await Notification.create({
+            title: `Booking details has been Changed for ${booking.vendor_type}`,
+            description: ``,
+            priority: 'high',
+            viewed: false,
+            user_id: booking.client_id,
+        })
+
+        // creating a notification: @vendor
+        await Notification.create({
+            title: `Booking details Has been Changed for your ${booking.package_name}`,
+            description: ``,
+            priority: 'high',
+            viewed: false,
+            user_id: booking.vendor_id,
+        })
 
         res.status(200).json({
             message: 'Booking status updated successfully.',
