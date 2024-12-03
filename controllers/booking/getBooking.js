@@ -1,9 +1,13 @@
 import Booking from "../../models/booking.js";
 import Vendor from "../../models/vendor.js";
+import { Op } from 'sequelize';
 
 const getBookings = async (req, res) => {
     try {
         const bookings = await Booking.findAll({
+            where: {
+                status: { [Op.ne]: 'paid' }, // Exclude bookings with status 'paid'
+            },
             include: [
                 {
                     model: Vendor,

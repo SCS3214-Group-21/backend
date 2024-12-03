@@ -1,5 +1,6 @@
-import  Payment  from '../../models/payment.js'
-import Notification from "../../models/Notification.js"
+import Payment from '../../models/payment.js';
+import Notification from "../../models/Notification.js";
+import Booking from "../../models/booking.js";
 import Stripe from 'stripe';
 import crypto from 'crypto';
 
@@ -16,10 +17,9 @@ const decrypt = (encryptedText) => {
 
 // Conversion rate: Hardcoded for simplicity
 const LKR_TO_USD_RATE = 0.003; // Update this with the current conversion rate
-
 export const createCheckoutSession = async (req, res) => {
     try {
-        const { booking, vendorId } = req.body;
+        const { booking, vendorId, bookingId } = req.body;
 
         // Fetch the encrypted Stripe secret key for the vendor
         const paymentRecord = await Payment.findOne({ where: { user_id: vendorId } });
@@ -31,8 +31,8 @@ export const createCheckoutSession = async (req, res) => {
         // Decrypt the Stripe secret key for the vendor
         const decryptedStripeSecretKey = decrypt(paymentRecord.payment_key);
 
-        // Now initialize Stripe with the decrypted secret key for this vendor
-        const stripe = new Stripe(decryptedStripeSecretKey);  // Use vendor-specific secret key
+        // Initialize Stripe with the decrypted secret key for this vendor
+        const stripe = new Stripe(decryptedStripeSecretKey); // Use vendor-specific secret key
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -54,33 +54,45 @@ export const createCheckoutSession = async (req, res) => {
             mode: 'payment',
             success_url: 'http://localhost:5173/client/payment/success',
             cancel_url: 'http://localhost:5173/client/payment/cancel',
-            metadata: { vendorId: vendorId },  // Include vendor ID to track the payment
+            metadata: { vendorId: vendorId }, // Include vendor ID to track the payment
         });
 
-        // Creating a notification: @success
+        // ** Update Booking Status to 'paid' **
+        if (bookingId) {
+            const bookingRecord = await Booking.findByPk(bookingId); // Ensure booking exists
+
+            if (bookingRecord) {
+                bookingRecord.status = 'paid'; // Update status
+                await bookingRecord.save(); // Save changes to DB
+
+                console.log(`Booking status updated to 'paid' for Booking ID: ${bookingId}`);
+            } else {
+                console.warn(`Booking with ID ${bookingId} not found.`);
+            }
+        }
+
+        // ** Create a Success Notification for the User **
         await Notification.create({
             title: 'Payment Successful',
             description: `Your payment was successful. Reference ID: ${session.id}`,
             priority: 'high',
             viewed: false,
             user_id: req.user.id,
-        })
+        });
 
         res.status(200).json({ id: session.id });
-    }
-    catch (error) {
+    } catch (error) {
+        console.error('Error creating checkout session:', error);
 
-        // Creating a notification: @fail
+        // ** Create a Failure Notification for the User **
         await Notification.create({
             title: 'Payment Failed',
             description: `Your payment was unsuccessful. Reason: ${error.message}`,
             priority: 'high',
             viewed: false,
             user_id: req.user.id,
-        })
+        });
 
-        console.error('Error creating checkout session:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-
