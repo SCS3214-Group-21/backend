@@ -13,6 +13,6 @@ eventRouter.post('/create', isAuthorize, createEvent)
 eventRouter.delete('/eventId', isAuthorize, deleteEvent)
 eventRouter.get('/eventId', isAuthorize, getEventById)
 eventRouter.post('/eventId', isAuthorize, updateEvent)
-eventRouter.get('/event/my-events', isAuthorize, getUserEvents)
+eventRouter.get('/my-events', isAuthorize, getUserEvents)
 
 export default eventRouter
