@@ -6,13 +6,13 @@ const getBookings = async (req, res) => {
     try {
         const bookings = await Booking.findAll({
             where: {
-                status: { [Op.ne]: 'paid' }, // Exclude bookings with status 'paid'
+                status: { [Op.ne]: 'paid' }, 
             },
             include: [
                 {
                     model: Vendor,
-                    as: 'vendor', // Match alias in association
-                    attributes: ['pic', 'business_name'], // Fetch only required fields
+                    as: 'vendor', 
+                    attributes: ['pic', 'business_name'], 
                 },
             ],
         });
