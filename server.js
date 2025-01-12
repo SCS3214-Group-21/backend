@@ -31,6 +31,7 @@ import vendorDashboardRoute from './routes/vendorDashboardRoute.js';
 import userManagementRoute from './routes/userManagementRoutes.js';
 import notificationRoute from "./routes/notificationRoute.js";
 import eventRouter from "./routes/eventRoutes.js";
+import subscriptionRoute from "./routes/subscriptionRoute.js"
 
 
 const app = express();
@@ -116,6 +117,7 @@ app.use('/vendor-dashboard', vendorDashboardRoute);
 app.use('/users', userManagementRoute);
 app.use('/notification', notificationRoute)
 app.use('/event', eventRouter)
+app.use('/subscription',subscriptionRoute)
 
 
 io.on('connection', (socket) => {
